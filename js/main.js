@@ -90,6 +90,10 @@ $(document).ready(function () {
         table.draw(); 
     });
 
+    $('savePatientBtn').on('click', function(){
+
+    });
+
 
 
 
