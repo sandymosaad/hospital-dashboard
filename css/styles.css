@@ -132,7 +132,14 @@ h3 , h2 {
   }
 
 /* tables*/
-
+.tables {
+    margin-top: 20px;
+}
+th{
+    background-color: #1e3d58;
+    color: white;
+    /* margin-top: 35px; */
+}
 
 /*responsive*/
 @media (max-width: 575.98px){

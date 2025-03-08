@@ -74,29 +74,51 @@
         <section class="tables">
             <div>
                 <h3 class="tableTitle">Patients</h3>
-                <div class="dropdown m-3" id="statusDropdown">
-                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                      Filter By Status
-                    </button>
-                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                      <li><button class="dropdown-item" >Recovered</button></li>
-                      <li><button class="dropdown-item" >Stable</button></li>
-                      <li><button class="dropdown-item" >Under Treatment</button></li>
-                    </ul>
-                </div>
-
-               
-                
-                <table id="patientsTable" class="display">
+                    
+                <table id="patientsTable" class="display text-center ">
                     <thead>
                         <tr>
                             <th>ID</th>
                             <th>Name</th>
-                            <th>Age</th>
-                            <th>Gender</th>
+                            <th>Age
+                                <span class="dropdown m-3" id="ageDropdown" data-selected="All">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Filter
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><button class="dropdown-item">All</button></li>
+                                        <li><button class="dropdown-item">from 1 to 30</button></li>
+                                        <li><button class="dropdown-item">from 30 to 50</button></li>
+                                        <li><button class="dropdown-item">max to 50</button></li>
+                                    </ul>
+                                </span>
+                            </th>
+                            <th>Gender
+                                <span class="dropdown m-3" id="genderDropdown" data-selected="All">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                    Filter 
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                    <li><button class="dropdown-item" >ALL</button></li>
+                                    <li><button class="dropdown-item" >Male</button></li>
+                                    <li><button class="dropdown-item" >Female</button></li>
+                                    </ul>
+                                </span>
+                            </th>
                             <th>Address</th>
                             <th>Phone Number</th>  
-                            <th>Status</th>   
+                            <th>Status
+                                <span class="dropdown m-3" id="statusDropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                        Filter
+                                    </button>
+                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                        <li><button class="dropdown-item" >Recovered</button></li>
+                                        <li><button class="dropdown-item" >Stable</button></li>
+                                        <li><button class="dropdown-item" >Under Treatment</button></li>
+                                    </ul>
+                                </span>
+                            </th>   
                             <th>Disease </th>  
                         </tr>
                     </thead>
