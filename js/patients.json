@@ -1,0 +1,14 @@
+[
+    { "id": 1, "name": "Ahmed Ali", "age": 35, "gender": "Male", "address": "Cairo, Egypt", "phone": "+201234567890", "status": "Recovered", "disease": "Flu" },
+    { "id": 2, "name": "Sara Mohamed", "age": 28, "gender": "Female", "address": "Giza, Egypt", "phone": "+201112345678", "status": "Under Treatment", "disease": "Covid-19" },
+    { "id": 3, "name": "Hassan Youssef", "age": 40, "gender": "Male", "address": "Alexandria, Egypt", "phone": "+201098765432", "status": "Chronic", "disease": "Diabetes" },
+    { "id": 4, "name": "Mona Ahmed", "age": 22, "gender": "Female", "address": "Aswan, Egypt", "phone": "+201223344556", "status": "Stable", "disease": "Asthma" },
+    { "id": 5, "name": "Kareem Adel", "age": 30, "gender": "Male", "address": "Luxor, Egypt", "phone": "+201554433221", "status": "Recovered", "disease": "Bronchitis" },
+    { "id": 6, "name": "Nour Amr", "age": 27, "gender": "Female", "address": "Mansoura, Egypt", "phone": "+201667788990", "status": "Under Treatment", "disease": "Hypertension" },
+    { "id": 7, "name": "Ahmed Ali", "age": 35, "gender": "Male", "address": "Cairo, Egypt", "phone": "+201234567890", "status": "Recovered", "disease": "Flu" },
+    { "id": 8, "name": "Sara Mohamed", "age": 28, "gender": "Female", "address": "Giza, Egypt", "phone": "+201112345678", "status": "Under Treatment", "disease": "Covid-19" },
+    { "id": 9, "name": "Hassan Youssef", "age": 40, "gender": "Male", "address": "Alexandria, Egypt", "phone": "+201098765432", "status": "Chronic", "disease": "Diabetes" },
+    { "id": 10, "name": "Mona Ahmed", "age": 22, "gender": "Female", "address": "Aswan, Egypt", "phone": "+201223344556", "status": "Stable", "disease": "Asthma" },
+    { "id": 11, "name": "Kareem Adel", "age": 30, "gender": "Male", "address": "Luxor, Egypt", "phone": "+201554433221", "status": "Recovered", "disease": "Bronchitis" },
+    { "id": 12, "name": "Nour Amr", "age": 27, "gender": "Female", "address": "Mansoura, Egypt", "phone": "+201667788990", "status": "Under Treatment", "disease": "Hypertension" }
+]

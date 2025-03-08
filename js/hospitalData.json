@@ -1,0 +1,6 @@
+ {
+    "patients": 250,
+    "doctors": 50,
+    "appointments": 120,
+    "departments": 10
+}
