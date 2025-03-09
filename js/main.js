@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    // hospital data
     $.getJSON("js/hospitalData.json", function (data) {
             console.log(data);
             $("#totalPatients").text(data.patients);
@@ -41,7 +42,7 @@ $(document).ready(function () {
             });
     });
 
-
+    // dropdowns filter
     $('#statusDropdown .dropdown-item').on('click', function() {
         let table = $('#patientsTable').DataTable();
         $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
@@ -65,8 +66,7 @@ $(document).ready(function () {
         $('#statusDropdown').attr('data-selected',statusChoice);
         table.draw(); 
     });
- 
-    
+
     $('#genderDropdown .dropdown-item').on('click', function () {
         let table = $('#patientsTable').DataTable();
         $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
@@ -109,6 +109,7 @@ $(document).ready(function () {
         table.draw(); 
     });
 
+    // add new patient
     $('#savePatientBtn').on('click', function () {
         let id = $('#id').val();
         let name = $('#name').val();
@@ -141,4 +142,5 @@ $(document).ready(function () {
 
         $('#patientModal').modal('hide'); 
     });
+    
 });

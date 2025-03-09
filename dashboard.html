@@ -73,138 +73,150 @@
             </div>
         </section>
 
-        <section class="tables">
-            <div>
-                <h3 class="tableTitle">Patients</h3>
-                                    <!-- Modal -->
-                    <button type="button" class="btn btn-primary mb-3 " data-bs-toggle="modal" data-bs-target="#patientModal">
+        <section class="tables container">
+            <div class="row">
+                <div class="col-12">
+                    <h3 class="tableTitle text-center">Patients</h3>
+                    
+                    <!-- Add Patient Button -->
+                    <button type="button" class="btn addPatientBtn mb-3 d-block w-100 d-md-inline" data-bs-toggle="modal" data-bs-target="#patientModal">
                         Add Patient
                     </button>
+        
+                    <!-- Modal -->
                     <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
-                        <div class="modal-dialog">
-                        <div class="modal-content">
-                            <div class="modal-header">
-                            <h1 class="modal-title fs-5" id="exampleModalLabel">Add Patient</h1>
-                            <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
-                            </div>
-                            <div class="modal-body">
-                                <!-- form -->
-                                <div class="mb-3" id="patientForm">
-                                    <label for="id" class="form-label">ID </label>
-                                    <input type="number" class="form-control" id="id" name="id" placeholder="Patient Id" required>
-
-                                    <label for="name" class="form-label">Name</label>
-                                    <input type="text" class="form-control" id="name" name="name" placeholder="Patient Name" required>
-                                   
-                                    <label for="age" class="form-label">Age </label>
-                                    <input type="number" class="form-control" id="age" name="age" placeholder="Patient Age" required>
-
-                                    <label  class="form-label">Gender</label>
-                                    <div class="form-check" >
-                                        <input class="form-check-input" type="radio" name="gender" id="male">
-                                        <label class="form-check-label" for="male">
-                                        Male
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="gender" id="female" >
-                                        <label class="form-check-label" for="female">
-                                        Female
-                                        </label>
-                                    </div>
-
-                                    <label for="address" class="form-label">Address</label>
-                                    <input type="text" class="form-control" id="address" name="address" placeholder="Patient Address" required>
-
-                                    <label for="phone" class="form-label">Phone</label>
-                                    <input type="text" class="form-control" id="phone" name="phone" placeholder="Patient Phone" required>
-
-                                    <label class="form-label">Status</label>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status" id="recovered">
-                                        <label class="form-check-label" for="recovered">
-                                            Recovered
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status" id="stable" >
-                                        <label class="form-check-label" for="stable">
-                                            Stable
-                                        </label>
-                                    </div>
-                                    <div class="form-check">
-                                        <input class="form-check-input" type="radio" name="status" id="underTreatment" >
-                                        <label class="form-check-label" for="underTreatment">
-                                            Under Treatment
-                                        </label>
-                                    </div>
-                                    
-                                    <label for="disease" class="form-label">Disease</label>
-                                    <input type="text" class="form-control" id="disease" name="disease" placeholder="Patient Disease" required>
-                                
+                        <div class="modal-dialog modal-dialog-centered modal-lg">
+                            <div class="modal-content">
+                                <div class="modal-header">
+                                    <h1 class="modal-title fs-5" id="exampleModalLabel">Add Patient</h1>
+                                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <form id="patientForm">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <label for="id" class="form-label">ID</label>
+                                                <input type="number" class="form-control" id="id" name="id" placeholder="Patient Id" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="name" class="form-label">Name</label>
+                                                <input type="text" class="form-control" id="name" name="name" placeholder="Patient Name" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="age" class="form-label">Age</label>
+                                                <input type="number" class="form-control" id="age" name="age" placeholder="Patient Age" required>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label for="phone" class="form-label">Phone</label>
+                                                <input type="text" class="form-control" id="phone" name="phone" placeholder="Patient Phone" required>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="address" class="form-label">Address</label>
+                                                <input type="text" class="form-control" id="address" name="address" placeholder="Patient Address" required>
+                                            </div>
+                                        </div>
+                                        <div class="row mt-3">
+                                            <div class="col-md-6">
+                                                <label class="form-label">Gender</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="gender" id="male">
+                                                    <label class="form-check-label" for="male">Male</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="gender" id="female">
+                                                    <label class="form-check-label" for="female">Female</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-md-6">
+                                                <label class="form-label">Status</label>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="status" id="recovered">
+                                                    <label class="form-check-label" for="recovered">Recovered</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="status" id="stable">
+                                                    <label class="form-check-label" for="stable">Stable</label>
+                                                </div>
+                                                <div class="form-check">
+                                                    <input class="form-check-input" type="radio" name="status" id="underTreatment">
+                                                    <label class="form-check-label" for="underTreatment">Under Treatment</label>
+                                                </div>
+                                            </div>
+                                            <div class="col-12">
+                                                <label for="disease" class="form-label">Disease</label>
+                                                <input type="text" class="form-control" id="disease" name="disease" placeholder="Patient Disease" required>
+                                            </div>
+                                        </div>
+                                    </form>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                    <button type="button" class="btn btn-primary" id="savePatientBtn">Save changes</button>
                                 </div>
                             </div>
-                            <div class="modal-footer">
-                            <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="savePatientBtn">Save changes</button>
-                            </div>
-                        </div>
                         </div>
                     </div>
-
-                    <!-- table -->
-                <table id="patientsTable" class="display text-center ">
-                    <thead>
-                        <tr>
-                            <th>ID</th>
-                            <th>Name</th>
-                            <th>Age
-                                <span class="dropdown m-3" id="ageDropdown" data-selected="All">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Filter
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><button class="dropdown-item">All</button></li>
-                                        <li><button class="dropdown-item">from 1 to 30</button></li>
-                                        <li><button class="dropdown-item">from 30 to 50</button></li>
-                                        <li><button class="dropdown-item">max to 50</button></li>
-                                    </ul>
-                                </span>
-                            </th>
-                            <th>Gender
-                                <span class="dropdown m-3" id="genderDropdown" data-selected="All">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                    Filter 
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                    <li><button class="dropdown-item" >ALL</button></li>
-                                    <li><button class="dropdown-item" >Male</button></li>
-                                    <li><button class="dropdown-item" >Female</button></li>
-                                    </ul>
-                                </span>
-                            </th>
-                            <th>Address</th>
-                            <th>Phone Number</th>  
-                            <th>Status
-                                <span class="dropdown m-3" id="statusDropdown">
-                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
-                                        Filter
-                                    </button>
-                                    <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
-                                        <li><button class="dropdown-item" >ALL</button></li>
-                                        <li><button class="dropdown-item" >Recovered</button></li>
-                                        <li><button class="dropdown-item" >Stable</button></li>
-                                        <li><button class="dropdown-item" >Chronic</button></li>
-                                        <li><button class="dropdown-item" >Under Treatment</button></li>
-                                    </ul>
-                                </span>
-                            </th>   
-                            <th>Disease </th>  
-                        </tr>
-                    </thead>
-                </table>
+        
+                    <!-- Table -->
+                    <div class="table-responsive">
+                        <table id="patientsTable" class="table table-bordered table-striped text-center">
+                            <thead class="table-dark">
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Name</th>
+                                    <th>Age
+                                        <span class="dropdown m-3" id="ageDropdown" data-selected="All">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Filter
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><button class="dropdown-item">All</button></li>
+                                                <li><button class="dropdown-item">from 1 to 30</button></li>
+                                                <li><button class="dropdown-item">from 30 to 50</button></li>
+                                                <li><button class="dropdown-item">max to 50</button></li>
+                                            </ul>
+                                        </span>
+                                    </th>
+                                    <th>Gender
+                                        <span class="dropdown m-3" id="genderDropdown" data-selected="All">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                            Filter 
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                            <li><button class="dropdown-item" >ALL</button></li>
+                                            <li><button class="dropdown-item" >Male</button></li>
+                                            <li><button class="dropdown-item" >Female</button></li>
+                                            </ul>
+                                        </span>
+                                    </th>
+                                    <th>Address</th>
+                                    <th>Phone Number</th>  
+                                    <th>Status
+                                        <span class="dropdown m-3" id="statusDropdown">
+                                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton1" data-bs-toggle="dropdown" aria-expanded="false">
+                                                Filter
+                                            </button>
+                                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuButton1">
+                                                <li><button class="dropdown-item" >ALL</button></li>
+                                                <li><button class="dropdown-item" >Recovered</button></li>
+                                                <li><button class="dropdown-item" >Stable</button></li>
+                                                <li><button class="dropdown-item" >Chronic</button></li>
+                                                <li><button class="dropdown-item" >Under Treatment</button></li>
+                                            </ul>
+                                        </span>
+                                    </th>   
+                                    <th>Disease </th>  
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <!-- Data will be dynamically added here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
             </div>
         </section>
+        
     </main>
 </section>
     

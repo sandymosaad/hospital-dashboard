@@ -8,7 +8,7 @@ body {
 .navbarContainer {
     display: flex;
     justify-content: space-between;
-    background-color: #2a9df4;
+    background-color: #267ec2;
     padding: 10px 20px;
     align-items: center;
     color: white;
@@ -132,19 +132,41 @@ h3 , h2 {
   }
 
 /* tables*/
-.tables {
-    margin-top: 20px;
+.table-responsive {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
 }
-th{
-    background-color: #1e3d58;
-    color: white;
-    /* margin-top: 35px; */
+.addPatientBtn{
+    background-color: #267ec2;
 }
+
+.tables table {
+    width: 100%;
+    min-width: 800px; 
+    border-collapse: collapse;
+}
+
+@media (max-width: 768px) {
+    .tables table {
+        font-size: 14px;
+    }
+
+    .tables .dropdown {
+        display: block;
+        margin: 5px 0; 
+    }
+
+    .tables .btn {
+        font-size: 12px;
+        padding: 6px 10px;
+    }
+}
+
 
 /*responsive*/
 @media (max-width: 575.98px){
     .sidebar {
-        width: 25%;
+        width: 23%;
     }
     .mainContent {
         padding: 10px;
@@ -157,10 +179,11 @@ th{
         width: 100%;
         margin-bottom: 20px;
     }
+   
 }
 @media (min-width: 576px) and (max-width: 768px){
     .sidebar {
-        width: 20%;
+        width: 27%;
     }
     .card { 
         width: 45%;
