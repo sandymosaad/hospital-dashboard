@@ -43,10 +43,29 @@ $(document).ready(function () {
 
 
     $('#statusDropdown .dropdown-item').on('click', function() {
-        let status = $(this).text();
         let table = $('#patientsTable').DataTable();
-        table.column(6).search(status).draw();
+        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
+            let status = (data[6]); 
+            let statusChoice = $('#statusDropdown').attr('data-selected'); 
+    
+            if (!statusChoice || statusChoice === "ALL") {
+                return true;
+            } else if (statusChoice === "Stable") {
+                return status === "Stable";
+            } else if (statusChoice === "Recoverd") {
+                return status === "Recoverd";
+            } else if (statusChoice === "Under Treatment") {
+                return status === "Under Treatment";
+            } else if (statusChoice === "Chronic") {
+                return status === "Chronic";
+            }
+            return false;
+        });
+        let statusChoice = $(this).text().trim();
+        $('#statusDropdown').attr('data-selected',statusChoice);
+        table.draw(); 
     });
+ 
     
     $('#genderDropdown .dropdown-item').on('click', function () {
         let table = $('#patientsTable').DataTable();
@@ -90,22 +109,36 @@ $(document).ready(function () {
         table.draw(); 
     });
 
-    $('savePatientBtn').on('click', function(){
+    $('#savePatientBtn').on('click', function () {
+        let id = $('#id').val();
+        let name = $('#name').val();
+        let age = $('#age').val();
+        let address = $('#address').val();
+        let phone = $('#phone').val();
+        let disease = $('#disease').val();
+        let gender = $('input[name="gender"]:checked').next('label').text();
+        let status = $('input[name="status"]:checked').next('label').text();
 
+        if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
+            alert('Please fill all fields!');
+            return;
+        }
+
+        let table = $('#patientsTable').DataTable();
+        table.row.add({
+            'id':parseInt(id),
+            'name':name,
+            'age':parseInt(age),
+            'gender':gender,
+            'address':address,
+            'phone':phone,
+            'status':status,
+            'disease':disease
+        }).draw(); 
+        console.log("Updated Table Data:", table.rows().data().toArray());
+
+        $('#patientForm input, #patientForm select').val('');
+
+        $('#patientModal').modal('hide'); 
     });
-
-
-
-
-
-});    
-
-
-
-
-
-
-
-
-
-
+});
