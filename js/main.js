@@ -92,8 +92,21 @@ $(document).ready(function () {
         }
         $('#patientForm input, #patientForm select').val('');
         $('#patientModal').modal('hide'); 
+        showNotification("Patient added successfully!");
         displayPatientData();
     });
+    
+    // Notification
+    function showNotification(message) {
+        let notification = $('<div class="alert alert-success position-fixed top-0 end-0 m-3"></div>')
+            .text(message)
+            .hide()
+            .appendTo('body')
+            .fadeIn(300)
+            .delay(2000)
+            .fadeOut(500, function () { $(this).remove(); });
+    }
+    
     // dropdowns filter
     $('#statusDropdown .dropdown-item').on('click', function() {
         let table = $('#patientsTable').DataTable();
