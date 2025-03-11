@@ -56,46 +56,93 @@ $(document).ready(function () {
                     });
     }
 
+    //get data from inputs
+  
+
     // add new patient
     $('#savePatientBtn').on('click', function () {
-        let id = $('#id').val();
+        let id = parseInt($('#id').val());
         let name = $('#name').val();
-        let age = $('#age').val();
+        let age = parseInt($('#age').val());
         let address = $('#address').val();
         let phone = $('#phone').val();
         let disease = $('#disease').val();
         let gender = $('input[name="gender"]:checked').next('label').text();
         let status = $('input[name="status"]:checked').next('label').text();
-        
-        let patient ={
-            'id':parseInt(id),
-            "name": name,
-            "age": parseInt(age),
-            "gender": gender,
-            "address": address,
-            "phone": phone,
-            "status": status,
-            "disease": disease
-        }
 
-        let patients = JSON.parse(localStorage.getItem("patients"));    
+        let patient ={'id': id, "name": name, "age": age, "gender": gender, "address": address, "phone": phone, "status": status, "disease": disease }
+        if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
+            alert('Please fill all fields!');
+            return;
+        }
+        let patients = JSON.parse(localStorage.getItem("patients"));   
+
         if (patients) { 
+            hideErorr();
+            // vaildtion 
+            if (patients.some(patient => patient.id === id)) {
+                $(`#idError`).text('ID already exists!').show();
+                return;
+            }
+            
+            let phonePattern = /^01[0125][0-9]{8}$/;
+            if(!phonePattern.test(phone)){
+                $(`#phoneError`).text('Enter Right phone number!').show();
+                return;
+            }
+
+            let namePattern = /^[a-z A-Z]{3,}$/;
+            if(!namePattern.test(name)){
+                $(`#nameError`).text('Enter Right name!').show();
+                return;
+            }
+            let addressPattern = /^[A-Za-z0-9\s\-_\/]{3,}$/;
+            if(!addressPattern.test(address)){
+                $(`#addressError`).text('Enter a valid address!').show();
+                return;
+            }
+            let diseasePattern = /^[A-Za-z\u0600-\u06FF0-9\s\-_\/]{3,}$/;
+            if(!diseasePattern.test(disease))
+            {
+                $(`#diseaseError`).text('Enter a valid disease name!').show();
+                return;
+            }
+            
             patients.push(patient);
             localStorage.setItem("patients", JSON.stringify(patients));
         } else {
             localStorage.setItem("patients", JSON.stringify([patient]));
         }
 
-        if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
-            alert('Please fill all fields!');
-            return;
-        }
+
         $('#patientForm input, #patientForm select').val('');
         $('#patientModal').modal('hide'); 
         showNotification("Patient added successfully!");
         displayPatientData();
     });
+
     
+    function hideErorr(){
+            $('#idError').hide();
+            $('#nameError').hide();
+            $('#phoneError').hide();
+            $('#diseaseError').hide();
+            $('#adressError').hide();
+    }
+    // function showErorr(){
+    //     $('#id').on('input', function () {
+    //         $('#idError').hide();
+    //     });
+    //     $('#name').on('input', function () {
+    //         $('#nameError').hide();
+    //     }); $('#phone').on('input', function () {
+    //         $('#phoneError').hide();
+    //     }); $('#disease').on('input', function () {
+    //         $('#diseaseError').hide();
+    //     });$('#adress').on('input', function () {
+    //         $('#adressError').hide();
+    //     });
+    // }
     // Notification
     function showNotification(message) {
         let notification = $('<div class="alert alert-success position-fixed top-0 end-0 m-3"></div>')
