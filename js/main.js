@@ -1,4 +1,5 @@
 $(document).ready(function () {
+    let table = $('#patientsTable').DataTable();
     // hospital data
     $.getJSON("js/hospitalData.json", function (data) {
             console.log(data);
@@ -26,22 +27,73 @@ $(document).ready(function () {
         }
     );
 
+    // patients data
     $.getJSON("js/patients.json", function (data) {
-            $("#patientsTable").DataTable({
-                data: data,
-                columns: [
-                    { data: "id" },
-                    { data: "name" },
-                    { data: "age" },
-                    { data: "gender" },
-                    { data: "address" },
-                    { data: "phone" },
-                    { data: "status" },
-                    { data: "disease" },
-                ],
-            });
+        let patients =JSON.parse( localStorage.getItem('patients'));
+        if(!patients){
+            localStorage.setItem("patients", JSON.stringify(data));
+            console.log(data);
+            displayPatientData();
+        }else{
+            displayPatientData();
+        }
     });
+    
+    function displayPatientData() {
+    let patients = JSON.parse(localStorage.getItem("patients"));
+    table.clear()
+    patients.forEach(patient => {
+                        table.row.add([
+                            patient.id,
+                            patient.name,
+                            patient.age,
+                            patient.gender,
+                            patient.address,
+                            patient.phone,
+                            patient.status,
+                            patient.disease
+                        ]).draw(); 
+                    });
+    }
 
+    // add new patient
+    $('#savePatientBtn').on('click', function () {
+        let id = $('#id').val();
+        let name = $('#name').val();
+        let age = $('#age').val();
+        let address = $('#address').val();
+        let phone = $('#phone').val();
+        let disease = $('#disease').val();
+        let gender = $('input[name="gender"]:checked').next('label').text();
+        let status = $('input[name="status"]:checked').next('label').text();
+        
+        let patient ={
+            'id':parseInt(id),
+            "name": name,
+            "age": parseInt(age),
+            "gender": gender,
+            "address": address,
+            "phone": phone,
+            "status": status,
+            "disease": disease
+        }
+
+        let patients = JSON.parse(localStorage.getItem("patients"));    
+        if (patients) { 
+            patients.push(patient);
+            localStorage.setItem("patients", JSON.stringify(patients));
+        } else {
+            localStorage.setItem("patients", JSON.stringify([patient]));
+        }
+
+        if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
+            alert('Please fill all fields!');
+            return;
+        }
+        $('#patientForm input, #patientForm select').val('');
+        $('#patientModal').modal('hide'); 
+        displayPatientData();
+    });
     // dropdowns filter
     $('#statusDropdown .dropdown-item').on('click', function() {
         let table = $('#patientsTable').DataTable();
@@ -109,38 +161,6 @@ $(document).ready(function () {
         table.draw(); 
     });
 
-    // add new patient
-    $('#savePatientBtn').on('click', function () {
-        let id = $('#id').val();
-        let name = $('#name').val();
-        let age = $('#age').val();
-        let address = $('#address').val();
-        let phone = $('#phone').val();
-        let disease = $('#disease').val();
-        let gender = $('input[name="gender"]:checked').next('label').text();
-        let status = $('input[name="status"]:checked').next('label').text();
-
-        if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
-            alert('Please fill all fields!');
-            return;
-        }
-
-        let table = $('#patientsTable').DataTable();
-        table.row.add({
-            'id':parseInt(id),
-            'name':name,
-            'age':parseInt(age),
-            'gender':gender,
-            'address':address,
-            'phone':phone,
-            'status':status,
-            'disease':disease
-        }).draw(); 
-        console.log("Updated Table Data:", table.rows().data().toArray());
-
-        $('#patientForm input, #patientForm select').val('');
-
-        $('#patientModal').modal('hide'); 
-    });
+    
     
 });
