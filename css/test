@@ -1,0 +1,68 @@
+ $('#savePatientBtn').on('click', function () {
+        hideError();
+    
+        let id = parseInt($('#id').val());
+        let name = $('#name').val().trim();
+        let age = parseInt($('#age').val());
+        let address = $('#address').val().trim();
+        let phone = $('#phone').val().trim();
+        let disease = $('#disease').val().trim();
+        let gender = $('input[name="gender"]:checked').next('label').text();
+        let status = $('input[name="status"]:checked').next('label').text();
+    
+        let hasError = false; 
+    
+        if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
+            alert('Please fill all fields!');
+            return;
+        }
+    
+        let patients = JSON.parse(localStorage.getItem("patients")) || [];
+    
+        if (patients.some(p => p.id === id)) {
+            $('#idError').text('ID already exists!').show();
+            hasError = true;
+        }
+    
+        let phonePattern = /^01[0125][0-9]{8}$/;
+        if (!phonePattern.test(phone)) {
+            $('#phoneError').text('Enter a valid phone number!').show();
+            hasError = true;
+        }
+    
+        let namePattern = /^[\p{L}\s]{3,}$/u;
+        if (!namePattern.test(name)) {
+            $('#nameError').text('Enter a valid name!').show();
+            hasError = true;
+        }
+    
+        let addressPattern = /^[A-Za-z\u0600-\u06FF0-9\s\-_\/،.]{3,}$/u;
+        if (!addressPattern.test(address)) {
+            $('#addressError').text('Enter a valid address!').show();
+            hasError = true;
+        }
+    
+        let diseasePattern = /^[A-Za-z\u0600-\u06FF0-9\s\-_\/،.]{3,}$/u;
+        if (!diseasePattern.test(disease)) {
+            $('#diseaseError').text('Enter a valid disease name!').show();
+            hasError = true;
+        }
+    
+        if (hasError) {
+            return;
+        }
+    
+        let patient = { id, name, age, gender, address, phone, status, disease };
+        patients.push(patient);
+        localStorage.setItem("patients", JSON.stringify(patients));
+    
+        $('#patientModal').modal('hide');
+        $('#patientForm input, #patientForm select').val('');
+        
+        showNotification("Patient added successfully!");
+        displayPatientData();
+    });
+    
+    function hideError() {
+        $('#idError, #nameError, #phoneError, #diseaseError, #addressError').hide();
+    }

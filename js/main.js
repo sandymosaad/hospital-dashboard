@@ -56,9 +56,6 @@ $(document).ready(function () {
                     });
     }
 
-    //get data from inputs
-  
-
     // add new patient
     $('#savePatientBtn').on('click', function () {
         let id = parseInt($('#id').val());
@@ -70,79 +67,59 @@ $(document).ready(function () {
         let gender = $('input[name="gender"]:checked').next('label').text();
         let status = $('input[name="status"]:checked').next('label').text();
 
-        let patient ={'id': id, "name": name, "age": age, "gender": gender, "address": address, "phone": phone, "status": status, "disease": disease }
+        let hasError = false;
         if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
             alert('Please fill all fields!');
             return;
         }
         let patients = JSON.parse(localStorage.getItem("patients"));   
-
         if (patients) { 
             hideErorr();
             // vaildtion 
             if (patients.some(patient => patient.id === id)) {
                 $(`#idError`).text('ID already exists!').show();
-                return;
-            }
-            
+                hasError = true;
+            }            
             let phonePattern = /^01[0125][0-9]{8}$/;
             if(!phonePattern.test(phone)){
                 $(`#phoneError`).text('Enter Right phone number!').show();
-                return;
+                hasError = true;
             }
 
             let namePattern = /^[a-z A-Z]{3,}$/;
             if(!namePattern.test(name)){
                 $(`#nameError`).text('Enter Right name!').show();
-                return;
+                hasError = true;
             }
             let addressPattern = /^[A-Za-z0-9\s\-_\/]{3,}$/;
             if(!addressPattern.test(address)){
                 $(`#addressError`).text('Enter a valid address!').show();
-                return;
+                hasError = true;
             }
             let diseasePattern = /^[A-Za-z\u0600-\u06FF0-9\s\-_\/]{3,}$/;
-            if(!diseasePattern.test(disease))
-            {
+            if(!diseasePattern.test(disease)){
                 $(`#diseaseError`).text('Enter a valid disease name!').show();
-                return;
+                hasError = true;
             }
-            
+            if(hasError){
+                return
+            }
+            let patient ={'id': id, "name": name, "age": age, "gender": gender, "address": address, "phone": phone, "status": status, "disease": disease }
             patients.push(patient);
             localStorage.setItem("patients", JSON.stringify(patients));
-        } else {
-            localStorage.setItem("patients", JSON.stringify([patient]));
-        }
-
+            } else {
+                localStorage.setItem("patients", JSON.stringify([patient]));
+            }
 
         $('#patientForm input, #patientForm select').val('');
         $('#patientModal').modal('hide'); 
         showNotification("Patient added successfully!");
         displayPatientData();
     });
-
-    
     function hideErorr(){
-            $('#idError').hide();
-            $('#nameError').hide();
-            $('#phoneError').hide();
-            $('#diseaseError').hide();
-            $('#adressError').hide();
+        $('#idError, #nameError, #phoneError, #diseaseError, #addressError').hide();
     }
-    // function showErorr(){
-    //     $('#id').on('input', function () {
-    //         $('#idError').hide();
-    //     });
-    //     $('#name').on('input', function () {
-    //         $('#nameError').hide();
-    //     }); $('#phone').on('input', function () {
-    //         $('#phoneError').hide();
-    //     }); $('#disease').on('input', function () {
-    //         $('#diseaseError').hide();
-    //     });$('#adress').on('input', function () {
-    //         $('#adressError').hide();
-    //     });
-    // }
+
     // Notification
     function showNotification(message) {
         let notification = $('<div class="alert alert-success position-fixed top-0 end-0 m-3"></div>')
