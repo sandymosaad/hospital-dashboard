@@ -42,22 +42,30 @@ $(document).ready(function () {
     function displayPatientData() {
     let patients = JSON.parse(localStorage.getItem("patients"));
     table.clear()
-    patients.forEach(patient => {
-                        table.row.add([
-                            patient.id,
-                            patient.name,
-                            patient.age,
-                            patient.gender,
-                            patient.address,
-                            patient.phone,
-                            patient.status,
-                            patient.disease,
-                            `<div>   
-                                <button class="btn btn-outline-danger mb-3 deletePatient" data-id="${patient.id}">Delete</button>                            
-                                <button class=" btn btn-outline-warning updatePatient" data-id="${patient.id}">Update</button>
-                            </div>`
-                        ]).draw(); 
-                    });
+
+    if(patients){
+        console.log('hoa gh hna mfesh data');
+        patients.forEach(patient => {
+            table.row.add([
+                patient.id,
+                patient.name,
+                patient.age,
+                patient.gender,
+                patient.address,
+                patient.phone,
+                patient.status,
+                patient.disease,
+                `<div>   
+                    <button class="btn btn-outline-danger mb-3 deletePatient" data-id="${patient.id}">Delete</button>                            
+                    <button class=" btn btn-outline-warning updatePatient" data-id="${patient.id}">Update</button>
+                </div>`
+            ]).draw(); 
+        });
+
+    }else{
+        console.log('hoa gh hna 3ndh  data')
+       
+    }
     }
 
     
@@ -134,6 +142,7 @@ $(document).ready(function () {
         patientsAfterRemovePatient= patients.filter(patient=>patient.id!=id)
         localStorage.setItem("patients", JSON.stringify(patientsAfterRemovePatient));
         displayPatientData();
+        showNotification('Patient deleted succsessfully!');
     }
     
     // update patient 
@@ -181,9 +190,9 @@ $(document).ready(function () {
         localStorage.setItem('patients', JSON.stringify( patients))
         deletePatient();
         $('#patientModal').modal('hide');
-
+        showNotification('Patient updated succsessfully!');
     })
-    
+
     $('.addPatientBtn').on('click', function () {
         $('#patientForm')[0].reset(); 
         $('#id').prop("readonly", false); 
@@ -193,6 +202,13 @@ $(document).ready(function () {
 
     });
 
+    $('#deleteAllPatientsBtn').on('click', function(){
+        console.log('ana yeslt')
+        localStorage.clear('patients');
+        displayPatientData();
+        showNotification('ALL Patients deleted succsessfully!');
+
+    })
     // Notification
     function showNotification(message) {
         let notification = $('<div class="alert alert-success position-fixed top-0 end-0 m-3"></div>')
