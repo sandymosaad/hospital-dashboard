@@ -51,11 +51,27 @@ $(document).ready(function () {
                             patient.address,
                             patient.phone,
                             patient.status,
-                            patient.disease
+                            patient.disease,
+                            `<div>   
+                                <button class="btn btn-outline-danger mb-3 deletePatient" data-id="${patient.id}">Delete</button>                            
+                                <button class=" btn btn-outline-warning" onClick="updatePatient(${patient.id})">Update</button>
+                            </div>`
                         ]).draw(); 
                     });
     }
 
+    // delete patient
+    $('#patientsTable tbody').on("click", ".deletePatient", function () {
+        let id = $(this).data("id");
+        deletePatient(id);
+    });
+    function deletePatient(id){
+        let patients = JSON.parse(localStorage.getItem("patients"));
+        patientsAfterRemovePatient= patients.filter(patient=>patient.id!=id)
+        localStorage.setItem("patients", JSON.stringify(patientsAfterRemovePatient));
+        displayPatientData();
+    }
+    
     // add new patient
     $('#savePatientBtn').on('click', function () {
         let id = parseInt($('#id').val());
