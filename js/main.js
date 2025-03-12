@@ -54,23 +54,12 @@ $(document).ready(function () {
                             patient.disease,
                             `<div>   
                                 <button class="btn btn-outline-danger mb-3 deletePatient" data-id="${patient.id}">Delete</button>                            
-                                <button class=" btn btn-outline-warning" onClick="updatePatient(${patient.id})">Update</button>
+                                <button class=" btn btn-outline-warning updatePatient" data-id="${patient.id}">Update</button>
                             </div>`
                         ]).draw(); 
                     });
     }
 
-    // delete patient
-    $('#patientsTable tbody').on("click", ".deletePatient", function () {
-        let id = $(this).data("id");
-        deletePatient(id);
-    });
-    function deletePatient(id){
-        let patients = JSON.parse(localStorage.getItem("patients"));
-        patientsAfterRemovePatient= patients.filter(patient=>patient.id!=id)
-        localStorage.setItem("patients", JSON.stringify(patientsAfterRemovePatient));
-        displayPatientData();
-    }
     
     // add new patient
     $('#savePatientBtn').on('click', function () {
@@ -135,6 +124,74 @@ $(document).ready(function () {
     function hideErorr(){
         $('#idError, #nameError, #phoneError, #diseaseError, #addressError').hide();
     }
+      // delete patient
+      $('#patientsTable tbody').on("click", ".deletePatient", function () {
+        let id = $(this).data("id");
+        deletePatient(id);
+    });
+    function deletePatient(id){
+        let patients = JSON.parse(localStorage.getItem("patients"));
+        patientsAfterRemovePatient= patients.filter(patient=>patient.id!=id)
+        localStorage.setItem("patients", JSON.stringify(patientsAfterRemovePatient));
+        displayPatientData();
+    }
+    
+    // update patient 
+    $("#patientsTable tbody").on("click", ".updatePatient", function(){
+        let id=$(this).data("id");
+        //console.log(id);
+        //$('#patientModal').modal('show');
+        updatePatient(id);
+    })
+    function updatePatient(id){
+        let patients = JSON.parse(localStorage.getItem("patients"));
+        //console.log(id)
+        //console.log(patients)
+        let patientForUpdate= patients.find(patient=>patient.id===id)
+        //console.log(patientForUpdate)
+        if(patientForUpdate){
+            $('#id').val(patientForUpdate.id).prop("readonly", true);
+            $('#name').val(patientForUpdate.name);
+            $('#age').val(patientForUpdate.age);
+            $('#address').val(patientForUpdate.address);
+            $('#phone').val(patientForUpdate.phone);
+            $('#disease').val(patientForUpdate.disease);
+            $(`input[name="gender"][value= "${patientForUpdate.gender}"]`).prop("checked", true);
+            $(`input[name="status"][value= "${patientForUpdate.status}"]`).prop('checked', true)
+        }
+        $('#savePatientBtn').hide();
+        $('#updatePatientBtn').removeClass('d-none').show();
+        $('#patientModal').modal('show');
+    }
+
+    $('#updatePatientBtn').on('click', function(){
+        let id = parseInt($('#id').val());
+        let name = $('#name').val();
+        let age = parseInt($('#age').val());
+        let address = $('#address').val();
+        let phone = $('#phone').val();
+        let disease = $('#disease').val();
+        let gender = $('input[name="gender"]:checked').next('label').text();
+        let status = $('input[name="status"]:checked').next('label').text();
+        
+        let patientForUpdate ={'id': id, "name": name, "age": age, "gender": gender, "address": address, "phone": phone, "status": status, "disease": disease }
+        let patients = JSON.parse(localStorage.getItem("patients"));
+        patients= patients.filter(patient=>patient.id!=id);
+        patients.push(patientForUpdate)
+        localStorage.setItem('patients', JSON.stringify( patients))
+        deletePatient();
+        $('#patientModal').modal('hide');
+
+    })
+    
+    $('.addPatientBtn').on('click', function () {
+        $('#patientForm')[0].reset(); 
+        $('#id').prop("readonly", false); 
+        $('#savePatientBtn').show();
+        $('#updatePatientBtn').addClass('d-none').hide(); 
+        $('#patientModal').modal('show');
+
+    });
 
     // Notification
     function showNotification(message) {
