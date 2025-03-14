@@ -64,7 +64,18 @@ $(document).ready(function () {
 
     }else{
         console.log('hoa gh hna 3ndh  data')
-       
+        table.row.add([
+            'No Data',
+            'No Data',
+            'No Data',
+            'No Data',
+            'No Data',
+            'No Data',
+            'No Data',
+            'No Data',
+            'No Data',
+        ]).draw();
+ 
     }
     }
 
@@ -86,13 +97,15 @@ $(document).ready(function () {
             return;
         }
         let patients = JSON.parse(localStorage.getItem("patients"));   
+        hideErorr();
+
         if (patients) { 
-            hideErorr();
             // vaildtion 
             if (patients.some(patient => patient.id === id)) {
                 $(`#idError`).text('ID already exists!').show();
                 hasError = true;
-            }            
+            }  
+        }          
             let phonePattern = /^01[0125][0-9]{8}$/;
             if(!phonePattern.test(phone)){
                 $(`#phoneError`).text('Enter Right phone number!').show();
@@ -117,23 +130,26 @@ $(document).ready(function () {
             if(hasError){
                 return
             }
+        
             let patient ={'id': id, "name": name, "age": age, "gender": gender, "address": address, "phone": phone, "status": status, "disease": disease }
+            if(patients){
             patients.push(patient);
             localStorage.setItem("patients", JSON.stringify(patients));
             } else {
                 localStorage.setItem("patients", JSON.stringify([patient]));
             }
-
+        
         $('#patientForm input, #patientForm select').val('');
         $('#patientModal').modal('hide'); 
         showNotification("Patient added successfully!");
         displayPatientData();
     });
+
     function hideErorr(){
         $('#idError, #nameError, #phoneError, #diseaseError, #addressError').hide();
     }
       // delete patient
-      $('#patientsTable tbody').on("click", ".deletePatient", function () {
+    $('#patientsTable tbody').on("click", ".deletePatient", function () {
         let id = $(this).data("id");
         deletePatient(id);
     });
@@ -203,7 +219,7 @@ $(document).ready(function () {
     });
 
     $('#deleteAllPatientsBtn').on('click', function(){
-        console.log('ana yeslt')
+        console.log('ana yeslt 3nd el delete btn')
         localStorage.clear('patients');
         displayPatientData();
         showNotification('ALL Patients deleted succsessfully!');
