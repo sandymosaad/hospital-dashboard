@@ -42,6 +42,78 @@
         </aside>
         <main class="mainContent">
             <h2>Doctors</h2>
+                <!-- Add Doctor Button -->
+                <button type="button" class="btn addDoctorBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#doctorModal">
+                    Add Doctor
+                </button>
+                <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="deleteAllDoctorsBtn">
+                    Clear All Data
+                </button>
+
+                <!-- Modal -->
+                <div class="modal fade" id="doctorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal-dialog modal-dialog-centered modal-lg">
+                        <div class="modal-content">
+                            <div class="modal-header">
+                                <h1 class="modal-title fs-5" id="exampleModalLabel">Add Doctor</h1>
+                                <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                            </div>
+                            <div class="modal-body">
+                                <form id="doctorForm">
+                                    <div class="row">
+                                        <div class="col-md-6">
+                                            <label for="idDoctor" class="form-label">ID</label>
+                                            <input type="number" class="form-control" id="idDoctor" name="idDoctor" placeholder="Doctor Id" required>
+                                            <span id="idDoctorError" style="color: brown; display: none;"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="nameDoctor" class="form-label">Name</label>
+                                            <input type="text" class="form-control" id="nameDoctor" name="nameDoctor" placeholder="Doctor Name" required>
+                                            <span id="nameDoctorError" style="color: brown; display: none;"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="specializationDoctor" class="form-label">Specialization</label>
+                                            <input type="number" class="form-control" id="specializationDoctor" name="specispecializationDoctoralization" placeholder="Doctor specialization" required>
+                                            <span id="specializationDoctorError" style="color: brown; display: none;"></span>
+                                        </div>
+                                        <div class="col-md-6">
+                                            <label for="phoneDoctor" class="form-label">Phone</label>
+                                            <input type="text" class="form-control" id="phoneDoctor" name="phoneDoctor" placeholder="Doctor Phone" required>
+                                            <span id="phoneDoctorError" style="color: brown; display: none;"></span>
+                                        </div>
+                                        <div class="col-12">
+                                            <label for="emailDoctor" class="form-label">Email</label>
+                                            <input type="text" class="form-control" id="emailDoctor" name="emailDoctor" placeholder="Doctor Email" required>
+                                            <span id="emailDoctorError" style="color: brown; display: none;"></span>
+                                        </div>
+                                    </div>
+                                    <div class="row mt-3">
+                                        
+                                        <div class="col-md-6">
+                                            <label class="form-label">Status</label>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="statusDoctor" id="available" value="available">
+                                                <label class="form-check-label" for="available">Available</label>
+                                            </div>
+                                            <div class="form-check">
+                                                <input class="form-check-input" type="radio" name="statusDoctor" id="Un Available" value="Un Available">
+                                                <label class="form-check-label" for="Un Available">Un Available</label>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </form>
+                            </div>
+                            <div class="modal-footer">
+                                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                                <button type="button" class="btn btn-primary" id="saveDoctorBtn">Save changes</button>
+                                <button type="button" class="btn btn-primary d-none" id="updateDoctorBtn">Update Doctor</button>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+
             <div class="table-responsive">
                 <table id="doctorsTable" class="table table-bordered table-striped text-center display">
                     <thead class="table-dark">
@@ -68,7 +140,9 @@
                             <button class="btn btn-danger btn-sm">Delete</button>
                         </td>
                     </tr> -->
-                </tbody>    
+                </tbody>  
+                </table>
+            </div>  
         </main>
 
     </section>

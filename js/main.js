@@ -350,4 +350,13 @@ $(document).ready(function () {
         displayDoctorsData();
     }
 
+    // add a new doctor
+    function addNewDoctor(){
+        let id = $('#idDoctor').val();
+        console.log(id);
+    }
+
+    $('.addDoctorBtn').on('click', function(){
+        addNewDoctor()
+    })
 });
