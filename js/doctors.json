@@ -1,0 +1,19 @@
+ [
+        {
+            "id": 1,
+            "name": "Dr. Ahmed Ali",
+            "specialization": "Cardiology",
+            "email": "sandy@gmail.com",
+            "phone": "+201234567890",
+            "status": "avalibal"
+        },
+        {
+            "id": 2,
+            "name": "Dr. Sara Mohamed",
+            "specialization": "Dermatology",
+            "email": "sandy@gmail.com",
+            "phone": "+201112345678",
+            "status": "un avalibal"
+        }
+        
+]

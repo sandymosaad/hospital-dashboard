@@ -1,5 +1,4 @@
 $(document).ready(function () {
-    let table = $('#patientsTable').DataTable();
     // hospital data
     $.getJSON("js/hospitalData.json", function (data) {
             console.log(data);
@@ -28,6 +27,7 @@ $(document).ready(function () {
     );
 
     // patients data
+    let table = $('#patientsTable').DataTable();
     $.getJSON("js/patients.json", function (data) {
         let patients =JSON.parse( localStorage.getItem('patients'));
         if(!patients){
@@ -300,6 +300,28 @@ $(document).ready(function () {
         table.draw(); 
     });
 
-    
+    //---------------------------------------------------------------doctors-----------------------------------------------------------------------
+    //---------------------------------------------------------------------------------------------------------------------
+    //----------------------------------------------------------------------------------------------------------------------
+
+    $.getJSON('js/doctors.json', function(doctors){
+        localStorage.setItem('Doctors',JSON.stringify(doctors));
+        displayDoctorsData();
+        // $('#doctorsTable').DataTable({
+        //     data: doctors,
+        //     columns: [
+        //         { data: "id" },
+        //         { data: "name" },
+        //         { data: "specialization" },
+        //         { data: "email" },
+        //         { data: "phone" },
+        //         { data: "status" },
+        //     ],
+        // });
+    })
+
+    function displayDoctorsData(){
+        
+    }
     
 });

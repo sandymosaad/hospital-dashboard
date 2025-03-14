@@ -8,7 +8,7 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="css/styles.css">
-    <title>Patients</title>
+    <title>Doctors</title>
 </head>
 <body>
     <nav >
@@ -30,20 +30,48 @@
             </div>
         </div>
     </nav>
-<section class="mainContainer" >
-                <!-- sidebar -->
-    <aside class="sidebar" >
-        <ul>
-            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
-            <li><a href="doctors.html"><i class="fas fa-user-md"></i> Doctors</a></li>
-            <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
-        </ul>
-    </aside>
-    <main class="mainContent">
-    </main>
+    <section class="mainContainer" >
+                    <!-- sidebar -->
+        <aside class="sidebar" >
+            <ul>
+                <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
+                <li><a href="doctors.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+            </ul>
+        </aside>
+        <main class="mainContent">
+            <h2>Doctors</h2>
+            <div class="table-responsive">
+                <table id="doctorsTable" class="table table-bordered table-striped text-center display">
+                    <thead class="table-dark">
+                    <tr>
+                        <th>Id</th>
+                        <th>Name</th>
+                        <th>specialization</th>
+                        <th>Email</th>
+                        <th>Phone</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- <tr>
+                        <td>1</td>
+                        <td>sandy</td>
+                        <td>anf o aton</td>
+                        <td>sandy@gmail.com</td>
+                        <td>0123456789</td>
+                        <td>Available</td>
+                        <td>
+                            <button class="btn btn-primary btn-sm">Edit</button>
+                            <button class="btn btn-danger btn-sm">Delete</button>
+                        </td>
+                    </tr> -->
+                </tbody>    
+        </main>
 
-</section>
+    </section>
 
 
 
