@@ -78,8 +78,14 @@ $(document).ready(function () {
  
     }
     }
-
-    
+    // open model for add patieb=nt
+    $('.addPatientBtn').on('click', function () {
+        $('#patientForm')[0].reset(); 
+        $('#id').prop("readonly", false); 
+        $('#savePatientBtn').show();
+        $('#updatePatientBtn').addClass('d-none').hide(); 
+        $('#patientModal').modal('show');
+    });
     // add new patient
     $('#savePatientBtn').on('click', function () {
         let id = parseInt($('#id').val());
@@ -208,15 +214,6 @@ $(document).ready(function () {
         $('#patientModal').modal('hide');
         showNotification('Patient updated succsessfully!');
     })
-
-    $('.addPatientBtn').on('click', function () {
-        $('#patientForm')[0].reset(); 
-        $('#id').prop("readonly", false); 
-        $('#savePatientBtn').show();
-        $('#updatePatientBtn').addClass('d-none').hide(); 
-        $('#patientModal').modal('show');
-
-    });
 
     $('#deleteAllPatientsBtn').on('click', function(){
         console.log('ana yeslt 3nd el delete btn')
