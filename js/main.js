@@ -304,24 +304,50 @@ $(document).ready(function () {
     //---------------------------------------------------------------------------------------------------------------------
     //----------------------------------------------------------------------------------------------------------------------
 
-    $.getJSON('js/doctors.json', function(doctors){
-        localStorage.setItem('Doctors',JSON.stringify(doctors));
+    let tableOfDoctors = $('#doctorsTable').DataTable();
+    $.getJSON('js/doctors.json', function(doctorsData){
+        let doctors= JSON.parse(localStorage.getItem('Doctors'));
+        if(!doctors){
+            localStorage.setItem('Doctors',JSON.stringify(doctorsData));
+        }
         displayDoctorsData();
-        // $('#doctorsTable').DataTable({
-        //     data: doctors,
-        //     columns: [
-        //         { data: "id" },
-        //         { data: "name" },
-        //         { data: "specialization" },
-        //         { data: "email" },
-        //         { data: "phone" },
-        //         { data: "status" },
-        //     ],
-        // });
     })
 
+
     function displayDoctorsData(){
-        
+        let doctors = JSON.parse(localStorage.getItem('Doctors'));
+        tableOfDoctors.clear();
+        doctors.forEach(doctor => {
+            tableOfDoctors.row.add([
+                doctor.id,
+                doctor.name,
+                doctor.specialization,
+                doctor.email,
+                doctor.phone,
+                doctor.status,
+                `<div>   
+                <button class="btn btn-outline-danger  deleteDoctor" data-id="${doctor.id}">Delete</button>                            
+                <button class=" btn btn-outline-warning updateDoctor" data-id="${doctor.id}">Update</button>
+            </div>`
+
+            ]);
+        });
+        tableOfDoctors.draw();
     }
+
+    // delete doctor
+    $('#doctorsTable tbody').on("click", ".deleteDoctor", function () {
+        let id = $(this).attr('data-id');
+        console.log(id)
+        deleteDoctor(id);    
+    })
     
+    function deleteDoctor(id){
+        let doctors =JSON.parse(localStorage.getItem("Doctors"));
+        console.log(doctors)
+        let doctorsAfterRemoveDoctor= doctors.filter(doctor=>doctor.id!=id);
+        localStorage.setItem("Doctors",JSON.stringify(doctorsAfterRemoveDoctor));
+        displayDoctorsData();
+    }
+
 });
