@@ -304,24 +304,28 @@ $(document).ready(function () {
         displayDoctorsData();
     })
     function displayDoctorsData(){
-        let doctors = JSON.parse(localStorage.getItem('Doctors'));
-        tableOfDoctors.clear();
-        doctors.forEach(doctor => {
-            tableOfDoctors.row.add([
-                doctor.id,
-                doctor.name,
-                doctor.specialization,
-                doctor.email,
-                doctor.phone,
-                doctor.status,
-                `<div>   
-                <button class="btn btn-outline-danger  deleteDoctor" data-id="${doctor.id}">Delete</button>                            
-                <button class=" btn btn-outline-warning editDoctor" data-id="${doctor.id}">Edit</button>
-            </div>`
-
-            ]);
-        });
-        tableOfDoctors.draw();
+        let doctors = JSON.parse(localStorage.getItem('Doctors')) ;
+        //console.log(doctors);
+        if(doctors=== null){
+            tableOfDoctors.clear();
+        }else{
+            tableOfDoctors.clear();
+            doctors.forEach(doctor => {
+                tableOfDoctors.row.add([
+                    doctor.id,
+                    doctor.name,
+                    doctor.specialization,
+                    doctor.email,
+                    doctor.phone,
+                    doctor.status,
+                    `<div>   
+                    <button class="btn btn-outline-danger  deleteDoctor" data-id="${doctor.id}">Delete</button>                            
+                    <button class=" btn btn-outline-warning editDoctor" data-id="${doctor.id}">Edit</button>
+                </div>`
+                ]);
+            });
+        } tableOfDoctors.draw();
+        
     }
     // reset form
     $('#addDoctorBtn').on('click', function(){
@@ -443,6 +447,12 @@ $(document).ready(function () {
         displayDoctorsData();
     }
 
+    // clear all data 
+    $('#deleteAllDoctorsBtn').on('click', function () {
+        localStorage.clear('Doctors');
+        displayDoctorsData();
+        showNotification('ALL Doctors deleted succsessfully!');
+    })
     // edit doctor
     $('#doctorsTable tbody').on("click", ".editDoctor", function () {
         let id = $(this).attr('data-id');
