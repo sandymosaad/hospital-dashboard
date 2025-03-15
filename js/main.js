@@ -222,16 +222,7 @@ $(document).ready(function () {
         showNotification('ALL Patients deleted succsessfully!');
 
     })
-    // Notification
-    function showNotification(message) {
-        let notification = $('<div class="alert alert-success position-fixed top-0 end-0 m-3"></div>')
-            .text(message)
-            .hide()
-            .appendTo('body')
-            .fadeIn(300)
-            .delay(2000)
-            .fadeOut(500, function () { $(this).remove(); });
-    }
+
     
     // dropdowns filter
     $('#statusDropdown .dropdown-item').on('click', function() {
@@ -312,8 +303,6 @@ $(document).ready(function () {
         }
         displayDoctorsData();
     })
-
-
     function displayDoctorsData(){
         let doctors = JSON.parse(localStorage.getItem('Doctors'));
         tableOfDoctors.clear();
@@ -335,22 +324,10 @@ $(document).ready(function () {
         tableOfDoctors.draw();
     }
 
-    // delete doctor
-    $('#doctorsTable tbody').on("click", ".deleteDoctor", function () {
-        let id = $(this).attr('data-id');
-        console.log(id)
-        deleteDoctor(id);    
-    })
-    
-    function deleteDoctor(id){
-        let doctors =JSON.parse(localStorage.getItem("Doctors"));
-        console.log(doctors)
-        let doctorsAfterRemoveDoctor= doctors.filter(doctor=>doctor.id!=id);
-        localStorage.setItem("Doctors",JSON.stringify(doctorsAfterRemoveDoctor));
-        displayDoctorsData();
-    }
-
     // add a new doctor
+    $('#saveDoctorBtn').on('click', function(){        
+        getDoctorDataInput()
+    })
     function getDoctorDataInput(){
     let doctorData={}
     $('#doctorForm input').each(function(){
@@ -365,27 +342,17 @@ $(document).ready(function () {
             doctorData[attrName]=$(this).val();
         }
     })
-    console.log(doctorData);
-
+    //console.log(doctorData);
     vailditonDoctorData(doctorData);
     }
-
-    $('#saveDoctorBtn').on('click', function(){        
-        getDoctorDataInput()
-    })
-
     function vailditonDoctorData(data){
-        if( !data.idDoctor ||  !data.nameDoctor || !data.emailDoctor || !data.phoneDoctor || !data.specializationDoctor || !data.statusDoctor){
-            alert('Please fill all fields!');
+        if(   !data.nameDoctor || !data.emailDoctor || !data.phoneDoctor || !data.specializationDoctor || !data.statusDoctor){
+            showNotification('Please fill all fields!','alert-danger');
             return;
         }
         let hasError = false;
         let doctors =JSON.parse(localStorage.getItem("Doctors"));
         if(doctors){
-            if(doctors.some(doctor=>doctor.id==data.idDoctor)){
-                $(`#idDoctorError`).text('ID already exists!').show();
-                hasError = true;
-            }
             if(doctors.some(doctor=>doctor.email==data.emailDoctor)){
                 $(`#emailDoctorError`).text('Email already exists!').show();
                 hasError = true;
@@ -395,43 +362,90 @@ $(document).ready(function () {
                 hasError = true;
             }
         }
-            let phonePattern = /^01[0125][0-9]{8}$/;
-            if(!phonePattern.test(data.phoneDoctor)){
-                $(`#phoneError`).text('Enter Right phone number!').show();
-                hasError = true;
-            }
+        let phonePattern = /^01[0125][0-9]{8}$/;
+        if(!phonePattern.test(data.phoneDoctor)){
+            $(`#phoneError`).text('Enter Right phone number!').show();
+            hasError = true;
+        }
 
-            let namePattern = /^[a-z A-Z]{3,}$/;
-            if(!namePattern.test(data.nameDoctor)){
-                $(`#nameDoctorError`).text('Enter Right name!').show();
-                hasError = true;
-            }
+        let namePattern = /^[a-z A-Z]{3,}$/;
+        if(!namePattern.test(data.nameDoctor)){
+            $(`#nameDoctorError`).text('Enter Right name!').show();
+            hasError = true;
+        }
 
-            let emailPattern = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
-            if(!emailPattern.test(data.emailDoctor)){
-                $(`#emailDoctorError`).text('Enter Right email!').show();
-                hasError = true;
+        let emailPattern = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+        if(!emailPattern.test(data.emailDoctor)){
+            $(`#emailDoctorError`).text('Enter Right email!').show();
+            hasError = true;
+        }
+        let specializationPattern = /^[a-z A-Z]{3,}$/;
+        if(!specializationPattern.test(data.specializationDoctor)){
+            $(`#specializationDoctorError`).text('Enter Right specialization!').show();
+            hasError = true;
+        }
+        if(hasError){
+            return
+        }else{
+            let doctor= {
+                "id": data.idDoctor,
+                "name": data.nameDoctor,
+                "specialization": data.specializationDoctor,
+                "email": data.emailDoctor,
+                "phone": data.phoneDoctor,
+                "status": data.statusDoctor
             }
-            let specializationPattern = /^[a-z A-Z]{3,}$/;
-            if(!specializationPattern.test(data.specializationDoctor)){
-                $(`#specializationDoctorError`).text('Enter Right specialization!').show();
-                hasError = true;
-            }
-            if(hasError){
-                return
-            }else{
-                hideDoctorErorr();
-            }
+            hideDoctorErorr();
+            addNewDoctor(doctor);
+        }
+    }
+    function addNewDoctor(doctor){
+        let doctors =JSON.parse(localStorage.getItem("Doctors"));
+        //console.log(doctors)
+        if(doctors.length>0){
+            let lastId= doctors[doctors.length-1].id
+            doctor['id']=lastId+1 
+            doctors.push(doctor);
+            localStorage.setItem("Doctors",JSON.stringify(doctors));
+        }else{
+            doctor['id']=1 
+           // console.log(doctor);
+            let doctors=[doctor];
+            localStorage.setItem("Doctors",JSON.stringify(doctors));
+        }
+        $('#doctorForm')[0].reset();
+        $('#doctorModal').modal('hide');
+        showNotification('Doctor added succsessfully!');
+        displayDoctorsData();
     }
     function hideDoctorErorr(){
-        $('#idDoctorError, #nameDoctorError, #emailDoctorError, #phoneDoctorError, #specializationDoctorError').hide();
+        $('#nameDoctorError, #emailDoctorError, #phoneDoctorError, #specializationDoctorError').hide();
     }
-
-
-
-
-
-
+    // delete doctor
+    $('#doctorsTable tbody').on("click", ".deleteDoctor", function () {
+        let id = $(this).attr('data-id');
+        deleteDoctor(id);    
+    })
+    
+    function deleteDoctor(id){
+        let doctors =JSON.parse(localStorage.getItem("Doctors"));
+        let doctorsAfterRemoveDoctor= doctors.filter(doctor=>doctor.id!=id);
+        localStorage.setItem("Doctors",JSON.stringify(doctorsAfterRemoveDoctor));
+        showNotification('Doctor deleted succsessfully!');
+        displayDoctorsData();
+    }
+    
+  // Notification
+    function showNotification(message,cla) {
+        $('#alert')
+            .text(message)
+            .addClass(cla || 'alert-success')
+            .hide()
+            .appendTo('body')
+            .fadeIn(300)
+            .delay(2000)
+            .fadeOut(500);
+    }
 
 
 
