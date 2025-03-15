@@ -351,12 +351,124 @@ $(document).ready(function () {
     }
 
     // add a new doctor
-    function addNewDoctor(){
-        let id = $('#idDoctor').val();
-        console.log(id);
+    function getDoctorDataInput(){
+    let doctorData={}
+    $('#doctorForm input').each(function(){
+        let attrType= $(this).attr('type');
+        let attrName= $(this).attr('name');
+
+        if(attrType=='radio'){
+            if($(this).is(':checked')){
+                doctorData[attrName]=$(this).val();
+            }
+        }else{
+            doctorData[attrName]=$(this).val();
+        }
+    })
+    console.log(doctorData);
+
+    vailditonDoctorData(doctorData);
     }
 
-    $('.addDoctorBtn').on('click', function(){
-        addNewDoctor()
+    $('#saveDoctorBtn').on('click', function(){        
+        getDoctorDataInput()
     })
+
+    function vailditonDoctorData(data){
+        if( !data.idDoctor ||  !data.nameDoctor || !data.emailDoctor || !data.phoneDoctor || !data.specializationDoctor || !data.statusDoctor){
+            alert('Please fill all fields!');
+            return;
+        }
+        let hasError = false;
+        let doctors =JSON.parse(localStorage.getItem("Doctors"));
+        if(doctors){
+            if(doctors.some(doctor=>doctor.id==data.idDoctor)){
+                $(`#idDoctorError`).text('ID already exists!').show();
+                hasError = true;
+            }
+            if(doctors.some(doctor=>doctor.email==data.emailDoctor)){
+                $(`#emailDoctorError`).text('Email already exists!').show();
+                hasError = true;
+            }
+            if(doctors.some(doctor=>doctor.phone==data.phoneDoctor)){
+                $(`#phoneDoctorError`).text('Phone already exists!').show();
+                hasError = true;
+            }
+        }
+            let phonePattern = /^01[0125][0-9]{8}$/;
+            if(!phonePattern.test(data.phoneDoctor)){
+                $(`#phoneError`).text('Enter Right phone number!').show();
+                hasError = true;
+            }
+
+            let namePattern = /^[a-z A-Z]{3,}$/;
+            if(!namePattern.test(data.nameDoctor)){
+                $(`#nameDoctorError`).text('Enter Right name!').show();
+                hasError = true;
+            }
+
+            let emailPattern = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
+            if(!emailPattern.test(data.emailDoctor)){
+                $(`#emailDoctorError`).text('Enter Right email!').show();
+                hasError = true;
+            }
+            let specializationPattern = /^[a-z A-Z]{3,}$/;
+            if(!specializationPattern.test(data.specializationDoctor)){
+                $(`#specializationDoctorError`).text('Enter Right specialization!').show();
+                hasError = true;
+            }
+            if(hasError){
+                return
+            }else{
+                hideDoctorErorr();
+            }
+    }
+    function hideDoctorErorr(){
+        $('#idDoctorError, #nameDoctorError, #emailDoctorError, #phoneDoctorError, #specializationDoctorError').hide();
+    }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+    
 });
