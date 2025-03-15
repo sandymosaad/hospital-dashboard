@@ -512,21 +512,15 @@ $(document).ready(function () {
 
     let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery'];
     localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
-    doctors=JSON.parse(localStorage.getItem('Doctors'))
-    doctorsName=[],
-    doctors.forEach(
-        doctor => {
-            doctorsName.push(doctor.name)
-        }
-    )
-    console.log(doctorsName)
 
     let appointmentTable=$('#appointmentsTable').DataTable()
     $.getJSON('js/appointment.json',function(data){
-        console.log(data)
-        displayappointmentsData(data);
+      //      console.log(data)
+    localStorage.setItem("Appointments",JSON.stringify(data))
+    displayAppointmentsData();
     })
-    function displayappointmentsData(appointments){
+    function displayAppointmentsData(){
+        let appointments= JSON.parse(localStorage.getItem("Appointments"));
         appointments.forEach(appointment=>
             appointmentTable.row.add([
                 appointment.id,
@@ -542,12 +536,37 @@ $(document).ready(function () {
                 </div>`
             ]).draw()
         )
-       
     }
 
+    // add a new appointment 
+    
+    $('#addAppointmentBtn').on('click', function(){      
+        let doctors=JSON.parse(localStorage.getItem('Doctors')) || [];
+        doctorsName=[],
+        $('.doctorName ul').empty();
+        doctors.forEach(
+            doctor => {
+                doctorsName.push(doctor.name);
+                // console.log(doctor.name)
+                let doctorName= `<li><a class="dropdown-item" href="#">${doctor.name}</a></li>`;
+                $('.doctorName ul').append(doctorName);
+            }
+        )
+        let departments = JSON.parse(localStorage.getItem("Departments"))|| []
+        $('.specializationAppointment ul').empty();
+        departments.forEach(
+            department => {
+                let departmentName = `<li><a class="dropdown-item" href="#">${department}</a></li>`;
+                $('.specializationAppointment ul').append(departmentName);
+            }
+            
+        )
+        getAppointmentDataInput()
+    })
 
-
-
+    function getAppointmentDataInput(){
+        
+    }
 
 
 
