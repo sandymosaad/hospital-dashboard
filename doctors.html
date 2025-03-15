@@ -43,7 +43,7 @@
         <main class="mainContent">
             <h2>Doctors</h2>
                 <!-- Add Doctor Button -->
-                <button type="button" class="btn addDoctorBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#doctorModal">
+                <button type="button" id="addDoctorBtn" class="btn addDoctorBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#doctorModal">
                     Add Doctor
                 </button>
                 <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="deleteAllDoctorsBtn">
@@ -61,11 +61,11 @@
                             <div class="modal-body">
                                 <form id="doctorForm">
                                     <div class="row">
-                                        <!-- <div class="col-md-6">
+                                        <div class="col-md-6 d-none" >
                                             <label for="idDoctor" class="form-label">ID</label>
                                             <input type="number" class="form-control" id="idDoctor" name="idDoctor" placeholder="Doctor Id" required>
                                             <span id="idDoctorError" style="color: brown; display: none;"></span>
-                                        </div> -->
+                                        </div>
                                         <div class="col-md-6">
                                             <label for="nameDoctor" class="form-label">Name</label>
                                             <input type="text" class="form-control" id="nameDoctor" name="nameDoctor" placeholder="Doctor Name" required>

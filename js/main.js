@@ -316,14 +316,19 @@ $(document).ready(function () {
                 doctor.status,
                 `<div>   
                 <button class="btn btn-outline-danger  deleteDoctor" data-id="${doctor.id}">Delete</button>                            
-                <button class=" btn btn-outline-warning updateDoctor" data-id="${doctor.id}">Update</button>
+                <button class=" btn btn-outline-warning editDoctor" data-id="${doctor.id}">Edit</button>
             </div>`
 
             ]);
         });
         tableOfDoctors.draw();
     }
-
+    // reset form
+    $('#addDoctorBtn').on('click', function(){
+        $('#doctorForm')[0].reset();
+        $('#updateDoctorBtn').addClass('d-none').hide();
+        $('#saveDoctorBtn').show();
+    })
     // add a new doctor
     $('#saveDoctorBtn').on('click', function(){        
         getDoctorDataInput()
@@ -361,19 +366,21 @@ $(document).ready(function () {
                 $(`#phoneDoctorError`).text('Phone already exists!').show();
                 hasError = true;
             }
+            if(doctors.some(doctor=>doctor.name==data.nameDoctor)){
+                $(`#nameDoctorError`).text('Name already exists!').show();
+                hasError = true;
+            }
         }
         let phonePattern = /^01[0125][0-9]{8}$/;
         if(!phonePattern.test(data.phoneDoctor)){
             $(`#phoneError`).text('Enter Right phone number!').show();
             hasError = true;
         }
-
         let namePattern = /^[a-z A-Z]{3,}$/;
         if(!namePattern.test(data.nameDoctor)){
             $(`#nameDoctorError`).text('Enter Right name!').show();
             hasError = true;
         }
-
         let emailPattern = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
         if(!emailPattern.test(data.emailDoctor)){
             $(`#emailDoctorError`).text('Enter Right email!').show();
@@ -421,6 +428,7 @@ $(document).ready(function () {
     function hideDoctorErorr(){
         $('#nameDoctorError, #emailDoctorError, #phoneDoctorError, #specializationDoctorError').hide();
     }
+
     // delete doctor
     $('#doctorsTable tbody').on("click", ".deleteDoctor", function () {
         let id = $(this).attr('data-id');
@@ -434,6 +442,49 @@ $(document).ready(function () {
         showNotification('Doctor deleted succsessfully!');
         displayDoctorsData();
     }
+
+    // edit doctor
+    $('#doctorsTable tbody').on("click", ".editDoctor", function () {
+        let id = $(this).attr('data-id');
+        updateDoctor(id);
+    })
+
+    function updateDoctor(id){
+        let doctors =JSON.parse(localStorage.getItem("Doctors"));
+        let doctor = doctors.find(doctor=>doctor.id==id);
+        $('#idDoctor').val(doctor.id);
+        $('#nameDoctor').val(doctor.name);
+        $('#specializationDoctor').val(doctor.specialization);
+        $('#emailDoctor').val(doctor.email);
+        $('#phoneDoctor').val(doctor.phone);
+        $('#statusDoctor').val(doctor.status);
+        $(`input[name="statusDoctor"][value= "${doctor.status}"]`).prop('checked', true)
+
+        $('#saveDoctorBtn').hide();
+        $('#updateDoctorBtn').removeClass('d-none').show();
+        $('#doctorModal').modal('show');
+    }
+
+    $('#updateDoctorBtn').on('click', function () {
+        let id = ($('#idDoctor').val());
+        let name = $('#nameDoctor').val();
+        let specialization = $('#specializationDoctor').val();
+        let email = $('#emailDoctor').val();
+        let phone = $('#phoneDoctor').val();
+        let status = $('input[name="statusDoctor"]:checked').next('label').text();
+
+        let  doctor = {"id": id, "name": name, "specialization": specialization, "email": email, "phone": phone, "status": status }
+        let doctors =JSON.parse(localStorage.getItem("Doctors"));
+        doctors = doctors.filter(doctor=>doctor.id!=id);
+        doctors.push(doctor);
+
+        localStorage.setItem("Doctors",JSON.stringify(doctors));
+        console.log(doctor);
+        showNotification('Doctor updated succsessfully!');
+        displayDoctorsData();
+        $('#doctorForm')[0].reset();
+        $('#doctorModal').modal('hide');
+    })
     
   // Notification
     function showNotification(message,cla) {
