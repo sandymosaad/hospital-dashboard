@@ -44,7 +44,6 @@ $(document).ready(function () {
     table.clear()
 
     if(patients){
-        console.log('hoa gh hna mfesh data');
         patients.forEach(patient => {
             table.row.add([
                 patient.id,
@@ -63,7 +62,6 @@ $(document).ready(function () {
         });
 
     }else{
-        console.log('hoa gh hna 3ndh  data')
         table.row.add([
             'No Data',
             'No Data',
@@ -496,7 +494,7 @@ $(document).ready(function () {
         $('#doctorModal').modal('hide');
     })
     
-  // Notification
+    // Notification
     function showNotification(message,cla) {
         $('#alert')
             .text(message)
@@ -506,6 +504,45 @@ $(document).ready(function () {
             .fadeIn(300)
             .delay(2000)
             .fadeOut(500);
+    }
+    
+    //------------------------------------------------------------------------appointments------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------
+    //------------------------------------------------------------------------------------------------------------------------------------
+
+    let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery'];
+    localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
+    doctors=JSON.parse(localStorage.getItem('Doctors'))
+    doctorsName=[],
+    doctors.forEach(
+        doctor => {
+            doctorsName.push(doctor.name)
+        }
+    )
+    console.log(doctorsName)
+
+    let appointmentTable=$('#appointmentsTable').DataTable()
+    $.getJSON('js/appointment.json',function(data){
+        console.log(data)
+        displayappointmentsData(data);
+    })
+    function displayappointmentsData(appointments){
+        appointments.forEach(appointment=>
+            appointmentTable.row.add([
+                appointment.id,
+                appointment.doctorName,
+                appointment.patientName,
+                appointment.department,
+                appointment.date,
+                appointment.time,
+                appointment.status,
+                `<div>   
+                    <button class="btn btn-outline-danger  deleteAppointment" data-id="${appointment.id}">Delete</button>                            
+                    <button class=" btn btn-outline-warning editAppointment" data-id="${appointment.id}">Edit</button>
+                </div>`
+            ]).draw()
+        )
+       
     }
 
 
