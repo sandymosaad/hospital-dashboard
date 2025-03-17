@@ -1,4 +1,7 @@
 $(document).ready(function () {
+    let namePattern = /^[a-z A-Z]{3,}$/;
+    let hasError =false;
+
     // hospital data
     $.getJSON("js/hospitalData.json", function (data) {
             console.log(data);
@@ -562,31 +565,73 @@ $(document).ready(function () {
             }
             
         )
-        getAppointmentDataInput()
     })
 
+    let selectedDoctor = ''; 
+    let selectedSpecializationAppointment = '';
+    $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
+        event.preventDefault();
+        selectedDoctor = $(this).text(); 
+        $('.dropdown-toggle-doctor').text(selectedDoctor); 
+    });
+    $('.specializationAppointment ul').on('click', 'li a', function(event){
+        event.preventDefault();
+        selectedSpecializationAppointment = $(this).text();
+        $('.dropdown-toggle-specialization').text(selectedSpecializationAppointment);
+    })
     function getAppointmentDataInput(){
-        let selectedDoctor = ''; 
-        let selectedSpecializationAppointment = '';
-        $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
-            event.preventDefault();
-            selectedDoctor = $(this).text(); 
-            $('.dropdown-toggle-doctor').text(selectedDoctor); 
-        });
-        $('.specializationAppointment ul').on('click', 'li a', function(event){
-            event.preventDefault();
-            selectedSpecializationAppointment = $(this).text();
-            $('.dropdown-toggle-specialization').text(selectedSpecializationAppointment);
-        })
-
         let patientName=$('#patientNameAppointment').val();
         let date=$('#dateAppointment').val();
         let time=$('#timeAppointment').val();
-        let appointmet={'patientName':patientName,'doctorName':selectedDoctor,'date':date,'time':time, 'specialization':selectedSpecializationAppointment}
-    
-        vailditonAppointmentData();
+        let status =$('input[name="statusAppointment"]:checked').next("label").text()
+        let appointmet={'patientName':patientName,'doctorName':selectedDoctor,'date':date,'time':time, 'specialization':selectedSpecializationAppointment, 'status':status}
+    console.log(date)
+    vailditonAppointmentData(appointmet);
     }
 
+    function vailditonAppointmentData(appointmentData){
+        // if(!appointmentData.patientName | !appointmentData.doctorName| !appointmentData.date |!appointmentData.time | !appointmentData.specialization){
+        //     showNotification('Please fill all fields!','alert-danger');
+        //     return;
+        // }
+        if(!namePattern.test(appointmentData.patientName)){
+            $('#patientNameAppointmentError').text('Please Enter Vaild Name!').show()
+            hasError=true;
+        }
+        let date=( new Date()).toISOString().split('T')[0] ;
+        let appointmentDate = appointmentData.date;
+
+        let today = new Date( date);
+        let selectedDate = new Date(appointmentDate);
+        if(selectedDate< today){
+            $('#dateAppointmentError').text('Enter a valid date!').show()
+            hasError=true;
+        }
+        if(hasError){
+            return;
+        }else{
+            let appointmet={'patientName':appointmentData.patientName,'doctorName':selectedDoctor,'date':selectedDate,'time':appointmentData.time, 'specialization':selectedSpecializationAppointment , 'status':appointmentData.status}
+            addAppointment(appointmet);
+            console.log(appointmet)
+            hideAppointmentErorr();
+        }
+
+    }
+    function addAppointment(appointment){
+        console.log(appointment)
+        appointmentTable.row.add([
+            1,
+            appointment.doctorName,
+            appointment.patientName,
+            appointment.specialization,
+            appointment.date.toLocaleDateString('en-GB'),
+            appointment.time,
+            appointment.status
+        ]).draw()
+    }
+    function hideAppointmentErorr(){
+        $('#dateAppointmentError'),$('#patientNameAppointmentError').hide();
+    }
     $('#saveAppointmentBtn').on('click', function(){
         getAppointmentDataInput()
         // console.log('---save---')
