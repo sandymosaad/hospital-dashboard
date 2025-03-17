@@ -548,8 +548,9 @@ $(document).ready(function () {
             doctor => {
                 doctorsName.push(doctor.name);
                 // console.log(doctor.name)
-                let doctorName= `<li><a class="dropdown-item" href="#">${doctor.name}</a></li>`;
-                $('.doctorName ul').append(doctorName);
+                //
+                let doctorName= `<li><a class="dropdown-item" href="#" id='doctorNameAppointment' name='doctorNameAppointment' value='${doctor.name}'>${doctor.name}</a></li>`;
+                $('.doctorNameAppointment ul').append(doctorName);
             }
         )
         let departments = JSON.parse(localStorage.getItem("Departments"))|| []
@@ -565,8 +566,32 @@ $(document).ready(function () {
     })
 
     function getAppointmentDataInput(){
-        
+        let selectedDoctor = ''; 
+        let selectedSpecializationAppointment = '';
+        $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
+            event.preventDefault();
+            selectedDoctor = $(this).text(); 
+            $('.dropdown-toggle-doctor').text(selectedDoctor); 
+        });
+        $('.specializationAppointment ul').on('click', 'li a', function(event){
+            event.preventDefault();
+            selectedSpecializationAppointment = $(this).text();
+            $('.dropdown-toggle-specialization').text(selectedSpecializationAppointment);
+        })
+
+        let patientName=$('#patientNameAppointment').val();
+        let date=$('#dateAppointment').val();
+        let time=$('#timeAppointment').val();
+        let appointmet={'patientName':patientName,'doctorName':selectedDoctor,'date':date,'time':time, 'specialization':selectedSpecializationAppointment}
+    
+        vailditonAppointmentData();
     }
+
+    $('#saveAppointmentBtn').on('click', function(){
+        getAppointmentDataInput()
+        // console.log('---save---')
+        // console.log (appointmet)
+    })
 
 
 
