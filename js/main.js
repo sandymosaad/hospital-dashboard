@@ -519,17 +519,21 @@ $(document).ready(function () {
     let appointmentTable=$('#appointmentsTable').DataTable()
     $.getJSON('js/appointment.json',function(data){
       //      console.log(data)
-    localStorage.setItem("Appointments",JSON.stringify(data))
+    let appointments = JSON.parse(localStorage.getItem('Appointments'));
+    if (!appointments){
+        localStorage.setItem("Appointments",JSON.stringify(data))
+    }
     displayAppointmentsData();
     })
     function displayAppointmentsData(){
         let appointments= JSON.parse(localStorage.getItem("Appointments"));
+        appointmentTable.clear()
         appointments.forEach(appointment=>
             appointmentTable.row.add([
                 appointment.id,
                 appointment.doctorName,
                 appointment.patientName,
-                appointment.department,
+                appointment.specialization,
                 appointment.date,
                 appointment.time,
                 appointment.status,
@@ -598,36 +602,44 @@ $(document).ready(function () {
             $('#patientNameAppointmentError').text('Please Enter Vaild Name!').show()
             hasError=true;
         }
-        let date=( new Date()).toISOString().split('T')[0] ;
-        let appointmentDate = appointmentData.date;
+        let date=( new Date()).toLocaleDateString('en-GB') ;
+        let appointmentDate = (appointmentData.date);
 
         let today = new Date( date);
-        let selectedDate = new Date(appointmentDate);
+        let selectedDate = (new Date(appointmentDate)).toLocaleDateString('en-GB') ;
         if(selectedDate< today){
             $('#dateAppointmentError').text('Enter a valid date!').show()
             hasError=true;
+        }else{
+            console.log('llllllllllllllllllll')
         }
         if(hasError){
             return;
         }else{
-            let appointmet={'patientName':appointmentData.patientName,'doctorName':selectedDoctor,'date':selectedDate,'time':appointmentData.time, 'specialization':selectedSpecializationAppointment , 'status':appointmentData.status}
+            let appointmet={'doctorName':selectedDoctor,'patientName':appointmentData.patientName,'specialization':selectedSpecializationAppointment ,'date':selectedDate,'time':appointmentData.time,'status':appointmentData.status}
+            hideAppointmentErorr();
             addAppointment(appointmet);
             console.log(appointmet)
-            hideAppointmentErorr();
         }
 
     }
     function addAppointment(appointment){
-        console.log(appointment)
-        appointmentTable.row.add([
-            1,
-            appointment.doctorName,
-            appointment.patientName,
-            appointment.specialization,
-            appointment.date.toLocaleDateString('en-GB'),
-            appointment.time,
-            appointment.status
-        ]).draw()
+        //console.log(appointment)
+        let appointments = JSON.parse(localStorage.getItem('Appointments'))
+            console.log(appointments)
+        if(appointments){
+            lastId= appointments[appointments.length-1].id
+            appointment.id=lastId+1
+            appointments.push(appointment);
+            localStorage.setItem('Appointments',JSON.stringify(appointments));
+        }else{
+            console.log('......')
+        }
+        $('#appointmentForm')[0].reset();
+        $('#appointmentModal').modal('hide');
+        showNotification("Appointment added successfuly!");
+        displayAppointmentsData();
+
     }
     function hideAppointmentErorr(){
         $('#dateAppointmentError'),$('#patientNameAppointmentError').hide();

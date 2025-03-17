@@ -3,7 +3,7 @@
         "id":1,
         "doctorName":"sandy",
         "patientName":"7mash",
-        "department":"Emergency",
+        "specialization":"Emergency",
         "date":"05/03/2025",
         "time": "10:00 AM",
         "status": "Daliy"
@@ -12,7 +12,7 @@
         "id":2,
         "doctorName":"sandy samir",
         "patientName":"7mash2",
-        "department":"Emergency",
+        "specialization":"Emergency",
         "date":"07/03/2025",
         "time": "10:00 AM",
         "status": "Daliy"
