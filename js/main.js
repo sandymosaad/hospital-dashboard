@@ -1,6 +1,6 @@
 $(document).ready(function () {
     let namePattern = /^[a-z A-Z]{3,}$/;
-    let hasError =false;
+    //let hasError =false;
 
     // hospital data
     $.getJSON("js/hospitalData.json", function (data) {
@@ -598,28 +598,32 @@ $(document).ready(function () {
         //     showNotification('Please fill all fields!','alert-danger');
         //     return;
         // }
+        hasError= false
         if(!namePattern.test(appointmentData.patientName)){
             $('#patientNameAppointmentError').text('Please Enter Vaild Name!').show()
             hasError=true;
         }
-        let date=( new Date()).toLocaleDateString('en-GB') ;
-        let appointmentDate = (appointmentData.date);
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
 
-        let today = new Date( date);
-        let selectedDate = (new Date(appointmentDate)).toLocaleDateString('en-GB') ;
-        if(selectedDate< today){
-            $('#dateAppointmentError').text('Enter a valid date!').show()
-            hasError=true;
-        }else{
-            console.log('llllllllllllllllllll')
+        let appointmentDate = new Date(appointmentData.date);
+        appointmentDate.setHours(0, 0, 0, 0); 
+
+        if (appointmentDate.getTime() < today.getTime()) {
+            $('#dateAppointmentError').text('Enter a valid date!').show();
+            hasError = true;
+        } else {
+            console.log('Valid date selected');
         }
+
         if(hasError){
             return;
         }else{
+            let selectedDate =appointmentDate.toLocaleDateString('en-GB')
             let appointmet={'doctorName':selectedDoctor,'patientName':appointmentData.patientName,'specialization':selectedSpecializationAppointment ,'date':selectedDate,'time':appointmentData.time,'status':appointmentData.status}
             hideAppointmentErorr();
             addAppointment(appointmet);
-            console.log(appointmet)
+           // console.log(appointmet)
         }
 
     }
@@ -642,7 +646,7 @@ $(document).ready(function () {
 
     }
     function hideAppointmentErorr(){
-        $('#dateAppointmentError'),$('#patientNameAppointmentError').hide();
+        $('#dateAppointmentError, #patientNameAppointmentError').hide();
     }
     $('#saveAppointmentBtn').on('click', function(){
         getAppointmentDataInput()
