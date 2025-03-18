@@ -728,7 +728,7 @@ $(document).ready(function () {
 
 
     //filter
-    //1- specialization filter
+    //1- specializations filter
     let specializations = JSON.parse(localStorage.getItem('Departments'));
     if (specializations) {
         let dropdownSpe = `<li><button class="dropdown-item" data-value="All">All</button></li>`;
@@ -739,59 +739,77 @@ $(document).ready(function () {
             $('#specializationDropdown ul').append(dropdownSpe);
         });
     }
+
     $('#specializationDropdown').on('click', '.dropdown-item', function () {
         let specializationChoice = $(this).attr('data-value');
-        
         $('#specializationDropdown').attr('data-selected', specializationChoice);
-        
         $('#dropdownMenuSpecialization').text(specializationChoice);
-
-        let appointmentsTable = $('#appointmentsTable').DataTable();
-
-        $.fn.dataTable.ext.search.length = 0;
-        $.fn.dataTable.ext.search.push(function (settings, data) {
-            let specialization = data[3].trim();
-            if (specializationChoice === "All" || specializationChoice === undefined) {
-                return true;
-            }
-            return specialization === specializationChoice;
-        });
-        appointmentsTable.draw();
+        applyFilters();
     });
 
-    //2- doctor filter
+    // 2- doctors filter
     let doctors = JSON.parse(localStorage.getItem('Doctors'));
-    //console.log (doctors)
-    if (doctors){
-       // console.log ('doctors')
-
-        let dropdownDoctorsName =`<li><button class="dropdown-item" data-value="All">All</button></li>`;
+    if (doctors) {
+        let dropdownDoctorsName = `<li><button class="dropdown-item" data-value="All">All</button></li>`;
         $('#doctorsNameDropdown ul').append(dropdownDoctorsName);
-    
-        doctors.forEach(doctor=>{
-            //console.log (doctor.name)
-            let dropdownDoctorsName =`<li><button class="dropdown-item" data-value="${doctor.name}">${doctor.name}</button></li>`;
-           // console.log (dropdownDoctorsName)
+
+        doctors.forEach(doctor => {
+            let dropdownDoctorsName = `<li><button class="dropdown-item" data-value="${doctor.name}">${doctor.name}</button></li>`;
             $('#doctorsNameDropdown ul').append(dropdownDoctorsName);
-        })
+        });
     }
-    $('#doctorsNameDropdown').on('click', '.dropdown-item', function (){
+
+    $('#doctorsNameDropdown').on('click', '.dropdown-item', function () {
         let doctorChoice = $(this).attr('data-value');
         $('#doctorsNameDropdown').attr('data-selected', doctorChoice);
         $('#dropdownMenuDoctorsName').text(doctorChoice);
-        let appointmentsTable = $('#appointmentsTable').DataTable();
-        $.fn.dataTable.ext.search.length = 0;
-        $.fn.dataTable.ext.search.push(function (settings, data){
-            let doctorName = data[1].trim();
-            if (doctorChoice=== "All" || doctorChoice=== undefined){
-                return true;
+        applyFilters();
+    });
+
+    // 3- status filter
+    let appointments = JSON.parse(localStorage.getItem('Appointments'));
+    if (appointments) {
+        let dropdownStatus = `<li><button class="dropdown-item" data-value="All">All</button></li>`;
+        $('#statusAppiontmentDropdown ul').append(dropdownStatus);
+        let existingStatuses = new Set();
+
+        appointments.forEach(appointment => {
+            if (!existingStatuses.has(appointment.status)) {
+                existingStatuses.add(appointment.status);
+                let dropdownStatus = `<li><button class="dropdown-item" data-value="${appointment.status}">${appointment.status}</button></li>`;
+                $('#statusAppiontmentDropdown ul').append(dropdownStatus);
             }
-            return doctorName === doctorChoice
+        });
+    }
+
+    $('#statusAppiontmentDropdown').on('click', '.dropdown-item', function () {
+        let statusChoice = $(this).attr('data-value');
+        $('#statusAppiontmentDropdown').attr('data-selected', statusChoice);
+        $('#dropdownMenuStatus').text(statusChoice);
+        applyFilters();
+    });
+
+
+    function applyFilters() {
+        let specializationChoice = $('#specializationDropdown').attr('data-selected') || "All";
+        let doctorChoice = $('#doctorsNameDropdown').attr('data-selected') || "All";
+        let statusChoice = $('#statusAppiontmentDropdown').attr('data-selected') || "All";
+
+        $.fn.dataTable.ext.search = []; 
+        
+        $.fn.dataTable.ext.search.push(function (settings, data) {
+            let specialization = data[3].trim();
+            let doctorName = data[1].trim();
+            let status = data[6].trim();
+
+            let specializationMatch = (specializationChoice === "All" || specialization === specializationChoice);
+            let doctorMatch = (doctorChoice === "All" || doctorName === doctorChoice);
+            let statusMatch = (statusChoice === "All" || status === statusChoice);
+
+            return specializationMatch && doctorMatch && statusMatch;
         });
         appointmentsTable.draw();
-    })
-
-
+    }
 
 
 
