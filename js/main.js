@@ -552,6 +552,12 @@ $(document).ready(function () {
 
     // add a new appointment 
     $('#addAppointmentBtn').on('click', function(){      
+        $('#updateAppointmentBtn').addClass('d-none').hide();
+        $('#saveAppointmentBtn').show();
+        $('#appointmentForm')[0].reset();
+        $('.dropdown-toggle-doctor').text('Doctors');
+        $('.dropdown-toggle-specialization').text('Specializations'); 
+ 
         let doctors=JSON.parse(localStorage.getItem('Doctors')) || [];
         $('.doctorNameAppointment ul').empty();
         doctors.forEach(
@@ -687,7 +693,7 @@ $(document).ready(function () {
         let formattedDate = appointmentForUpdate.date.split("/").reverse().join("-"); 
         // console.log(appointmentForUpdate)
         // console.log(Object.keys(appointmentForUpdate)); 
-
+        $('#idAppointment').val(appointmentForUpdate.id)
         $('#patientNameAppointment').val(appointmentForUpdate.patientName);
         $('.dropdown-toggle-doctor').text(appointmentForUpdate.doctorName);
         $('.dropdown-toggle-specialization').text(appointmentForUpdate.specialization);
@@ -695,14 +701,44 @@ $(document).ready(function () {
         $('#dateAppointment').val(formattedDate);
         $(`input[name="statusAppointment"][value="${appointmentForUpdate.status}"]`).prop('checked',true);
         
-        updateAppointment(id)
         $('#appointmentModal').modal('show');
+        $('#updateAppointmentBtn').removeClass('d-none').show();
+        $('#saveAppointmentBtn').hide();
     })
 
-    function updateAppointment(id){
+    // function updateAppointment(id){
+    //     let appointments = JSON.parse(localStorage.getItem('Appointments'));
+    //    $('#updateAppointmentBtn').removeClass('d-none').show();
+    //    $('#saveAppointmentBtn').hide();
+
+        //updateAppointment(id)
+
+    // }
+
+    $('#updateAppointmentBtn').on('click', function(){
         let appointments = JSON.parse(localStorage.getItem('Appointments'));
-       // appointments.
-    }
+        let id= parseInt($('#idAppointment').val());
+        let patientName= $('#patientNameAppointment').val();
+        let doctorName= $('.dropdown-toggle-doctor').text();
+        let specialization = $('.dropdown-toggle-specialization').text();
+        let time = $('#timeAppointment').val();
+        let date = $('#dateAppointment').val();
+        let status =  $(`input[name="statusAppointment"]:checked`).next('label').text()
+        let formattedDate = date.split("-").reverse().join("/"); 
+
+        appointments=appointments.filter(apppointment=>apppointment.id!=id);
+       // console.log(appointments)
+        let apppointment={'id':id, 'patientName':patientName, 'doctorName':doctorName, 'specialization':specialization, 'time':time, 'date':formattedDate, 'status':status  }
+        appointments.push(apppointment);
+        localStorage.setItem('Appointments', JSON.stringify(appointments));
+        showNotification('A appointment updated succsessfully!')
+        displayAppointmentsData()
+
+        $('#appointmentForm')[0].reset()
+        $('#appointmentModal').modal('hide');
+
+
+    })
 
 
 
