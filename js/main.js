@@ -4,7 +4,7 @@ $(document).ready(function () {
 
     // hospital data
     $.getJSON("js/hospitalData.json", function (data) {
-            console.log(data);
+            //console.log(data);
             $("#totalPatients").text(data.patients);
             $("#totalDoctors").text(data.doctors);
             $("#totalAppointments").text(data.appointments);
@@ -35,7 +35,7 @@ $(document).ready(function () {
         let patients =JSON.parse( localStorage.getItem('patients'));
         if(!patients){
             localStorage.setItem("patients", JSON.stringify(data));
-            console.log(data);
+            //console.log(data);
             displayPatientData();
         }else{
             displayPatientData();
@@ -490,7 +490,7 @@ $(document).ready(function () {
         doctors.push(doctor);
 
         localStorage.setItem("Doctors",JSON.stringify(doctors));
-        console.log(doctor);
+        //console.log(doctor);
         showNotification('Doctor updated succsessfully!');
         displayDoctorsData();
         $('#doctorForm')[0].reset();
@@ -520,29 +520,34 @@ $(document).ready(function () {
     $.getJSON('js/appointment.json',function(data){
       //      console.log(data)
     let appointments = JSON.parse(localStorage.getItem('Appointments'));
-    if (!appointments){
-        localStorage.setItem("Appointments",JSON.stringify(data))
-    }
+    // if (!appointments){
+    //     localStorage.setItem("Appointments",JSON.stringify(data))
+    // }
     displayAppointmentsData();
     })
     function displayAppointmentsData(){
         let appointments= JSON.parse(localStorage.getItem("Appointments"));
-        appointmentTable.clear()
-        appointments.forEach(appointment=>
-            appointmentTable.row.add([
-                appointment.id,
-                appointment.doctorName,
-                appointment.patientName,
-                appointment.specialization,
-                appointment.date,
-                appointment.time,
-                appointment.status,
-                `<div>   
-                    <button class="btn btn-outline-danger  deleteAppointment" data-id="${appointment.id}">Delete</button>                            
-                    <button class=" btn btn-outline-warning editAppointment" data-id="${appointment.id}">Edit</button>
-                </div>`
-            ]).draw()
-        )
+        //console.log(appointments)
+        if(appointments===null){
+            appointmentTable.clear()
+        }else{
+            appointmentTable.clear()
+            appointments.forEach(appointment=>
+                appointmentTable.row.add([
+                    appointment.id,
+                    appointment.doctorName,
+                    appointment.patientName,
+                    appointment.specialization,
+                    appointment.date,
+                    appointment.time,
+                    appointment.status,
+                    `<div>   
+                        <button class="btn btn-outline-danger  deleteAppointment" data-id="${appointment.id}">Delete</button>                            
+                        <button class=" btn btn-outline-warning editAppointment" data-id="${appointment.id}">Edit</button>
+                    </div>`
+                ])
+            )
+        }appointmentTable.draw()
     }
 
     // add a new appointment 
@@ -583,8 +588,8 @@ $(document).ready(function () {
         let time=$('#timeAppointment').val();
         let status =$('input[name="statusAppointment"]:checked').next("label").text()
         let appointmet={'patientName':patientName,'doctorName':selectedDoctor,'date':date,'time':time, 'specialization':selectedSpecializationAppointment, 'status':status}
-    console.log(date)
-    vailditonAppointmentData(appointmet);
+    //console.log(date)
+        vailditonAppointmentData(appointmet);
     }
 
     function vailditonAppointmentData(appointmentData){
@@ -607,7 +612,7 @@ $(document).ready(function () {
             $('#dateAppointmentError').text('Enter a valid date!').show();
             hasError = true;
         } else {
-            console.log('Valid date selected');
+          //  console.log('Valid date selected');
         }
 
         if(hasError){
@@ -623,16 +628,16 @@ $(document).ready(function () {
     function addAppointment(appointment){
         //console.log(appointment)
         let appointments = JSON.parse(localStorage.getItem('Appointments'))
-            console.log(appointments)
-        if(appointments.length!=0){
+            //console.log(appointments)
+        if(appointments!=null){
             lastId= appointments[appointments.length-1].id
             appointment.id=lastId+1
             appointments.push(appointment);
             localStorage.setItem('Appointments',JSON.stringify(appointments));
         }else{
             appointment.id=1,
-            appointments.push(appointment);
-            localStorage.setItem('Appointments',JSON.stringify(appointments));
+            //appointments.push(appointment);
+            localStorage.setItem('Appointments',JSON.stringify([appointment]));
         }
         $('.dropdown-toggle-doctor').text('Doctors'); 
         $('.dropdown-toggle-specialization').text('Specialization'); 
@@ -659,11 +664,18 @@ $(document).ready(function () {
     function deleteAppointment(id){
         let appointments = JSON.parse(localStorage.getItem('Appointments'))
         appointments=appointments.filter(appointment=>appointment.id!=id)
-        console.log (appointments)
+       // console.log (appointments)
         localStorage.setItem('Appointments',JSON.stringify(appointments));
         displayAppointmentsData();
         showNotification('Appointment deleted succsessfuly!')
     }
+
+    // delelte all appointments
+    $('#deleteAllAppointmentsBtn').on('click', function (){
+        localStorage.clear('Appointments');
+        displayAppointmentsData();
+        showNotification('All Appointments deleted succsessfully!')
+    })
 
 
 
