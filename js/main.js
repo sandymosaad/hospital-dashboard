@@ -546,7 +546,6 @@ $(document).ready(function () {
     }
 
     // add a new appointment 
-    
     $('#addAppointmentBtn').on('click', function(){      
         let doctors=JSON.parse(localStorage.getItem('Doctors')) || [];
         doctorsName=[],
@@ -570,7 +569,6 @@ $(document).ready(function () {
             
         )
     })
-
     let selectedDoctor = ''; 
     let selectedSpecializationAppointment = '';
     $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
@@ -625,25 +623,25 @@ $(document).ready(function () {
             addAppointment(appointmet);
            // console.log(appointmet)
         }
-
     }
     function addAppointment(appointment){
         //console.log(appointment)
         let appointments = JSON.parse(localStorage.getItem('Appointments'))
             console.log(appointments)
-        if(appointments){
+        if(appointments.length!=0){
             lastId= appointments[appointments.length-1].id
             appointment.id=lastId+1
             appointments.push(appointment);
             localStorage.setItem('Appointments',JSON.stringify(appointments));
         }else{
-            console.log('......')
+            appointment.id=1,
+            appointments.push(appointment);
+            localStorage.setItem('Appointments',JSON.stringify(appointments));
         }
         $('#appointmentForm')[0].reset();
         $('#appointmentModal').modal('hide');
         showNotification("Appointment added successfuly!");
         displayAppointmentsData();
-
     }
     function hideAppointmentErorr(){
         $('#dateAppointmentError, #patientNameAppointmentError').hide();
@@ -654,7 +652,20 @@ $(document).ready(function () {
         // console.log (appointmet)
     })
 
-
+    //delete a appointment
+    $('#appointmentsTable tbody').on('click ', ".deleteAppointment", function (){
+        let id = $(this).attr("data-id")
+        //console.log(id)
+        deleteAppointment(id);
+    })
+    function deleteAppointment(id){
+        let appointments = JSON.parse(localStorage.getItem('Appointments'))
+        appointments=appointments.filter(appointment=>appointment.id!=id)
+        console.log (appointments)
+        localStorage.setItem('Appointments',JSON.stringify(appointments));
+        displayAppointmentsData();
+        showNotification('Appointment deleted succsessfuly!')
+    }
 
 
 
