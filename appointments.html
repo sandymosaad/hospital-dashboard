@@ -133,7 +133,16 @@
                 <thead class="table-dark">
                 <tr>
                     <th>Id</th>
-                    <th>Doctor's Name </th>
+                    <th>Doctor's Name 
+                        <span class="dropdown m-3" id="doctorsNameDropdown" data-selected="All">
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuDoctorsName" data-bs-toggle="dropdown" aria-expanded="false">
+                                Filter
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuDoctorsName">
+                                <!-- dropdown-items</li-->
+                            </ul>
+                        </span>
+                    </th>
                     <th>Patient's Name </th>
                     <th>specialization
                         <span class="dropdown m-3" id="specializationDropdown" data-selected="All">
