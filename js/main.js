@@ -670,13 +670,39 @@ $(document).ready(function () {
         showNotification('Appointment deleted succsessfuly!')
     }
 
-    // delelte all appointments
+    // clear all appointments
     $('#deleteAllAppointmentsBtn').on('click', function (){
         localStorage.clear('Appointments');
         displayAppointmentsData();
         showNotification('All Appointments deleted succsessfully!')
     })
 
+    //edit appointment 
+    $('#appointmentsTable tbody').on('click',".editAppointment" ,function(){
+        let id = $(this).attr('data-id');
+       // console.log(id)
+        let appointments = JSON.parse(localStorage.getItem('Appointments'));
+        //console.log(appointments)
+        let appointmentForUpdate =appointments.find(appointmet=>appointmet.id==id)
+        let formattedDate = appointmentForUpdate.date.split("/").reverse().join("-"); 
+        // console.log(appointmentForUpdate)
+        // console.log(Object.keys(appointmentForUpdate)); 
+
+        $('#patientNameAppointment').val(appointmentForUpdate.patientName);
+        $('.dropdown-toggle-doctor').text(appointmentForUpdate.doctorName);
+        $('.dropdown-toggle-specialization').text(appointmentForUpdate.specialization);
+        $('#timeAppointment').val(appointmentForUpdate.time);
+        $('#dateAppointment').val(formattedDate);
+        $(`input[name="statusAppointment"][value="${appointmentForUpdate.status}"]`).prop('checked',true);
+        
+        updateAppointment(id)
+        $('#appointmentModal').modal('show');
+    })
+
+    function updateAppointment(id){
+        let appointments = JSON.parse(localStorage.getItem('Appointments'));
+       // appointments.
+    }
 
 
 
