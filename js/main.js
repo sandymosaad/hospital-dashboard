@@ -573,7 +573,6 @@ $(document).ready(function () {
                 let departmentName = `<li><a class="dropdown-item" href="#">${department}</a></li>`;
                 $('.specializationAppointment ul').append(departmentName);
             }
-            
         )
     })
     let selectedDoctor = ''; 
@@ -597,7 +596,6 @@ $(document).ready(function () {
     //console.log(date)
         vailditonAppointmentData(appointmet);
     }
-
     function vailditonAppointmentData(appointmentData){
         // if(!appointmentData.patientName | !appointmentData.doctorName| !appointmentData.date |!appointmentData.time | !appointmentData.specialization){
         //     showNotification('Please fill all fields!','alert-danger');
@@ -660,7 +658,6 @@ $(document).ready(function () {
         // console.log('---save---')
         // console.log (appointmet)
     })
-
     //delete a appointment
     $('#appointmentsTable tbody').on('click ', ".deleteAppointment", function (){
         let id = $(this).attr("data-id")
@@ -675,14 +672,12 @@ $(document).ready(function () {
         displayAppointmentsData();
         showNotification('Appointment deleted succsessfuly!')
     }
-
     // clear all appointments
     $('#deleteAllAppointmentsBtn').on('click', function (){
         localStorage.clear('Appointments');
         displayAppointmentsData();
         showNotification('All Appointments deleted succsessfully!')
     })
-
     //edit appointment 
     $('#appointmentsTable tbody').on('click',".editAppointment" ,function(){
         let id = $(this).attr('data-id');
@@ -705,16 +700,6 @@ $(document).ready(function () {
         $('#updateAppointmentBtn').removeClass('d-none').show();
         $('#saveAppointmentBtn').hide();
     })
-
-    // function updateAppointment(id){
-    //     let appointments = JSON.parse(localStorage.getItem('Appointments'));
-    //    $('#updateAppointmentBtn').removeClass('d-none').show();
-    //    $('#saveAppointmentBtn').hide();
-
-        //updateAppointment(id)
-
-    // }
-
     $('#updateAppointmentBtn').on('click', function(){
         let appointments = JSON.parse(localStorage.getItem('Appointments'));
         let id= parseInt($('#idAppointment').val());
@@ -739,36 +724,37 @@ $(document).ready(function () {
 
 
     })
+    //filter
+ 
+    let specializations = JSON.parse(localStorage.getItem('Departments'));
+    if (specializations) {
+        let dropdownSpe = `<li><button class="dropdown-item" data-value="All">All</button></li>`;
+        $('#specializationDropdown ul').append(dropdownSpe);
+
+        specializations.forEach(specialization => {
+            let dropdownSpe = `<li><button class="dropdown-item" data-value="${specialization}">${specialization}</button></li>`;
+            $('#specializationDropdown ul').append(dropdownSpe);
+        });
+    }
+    $('#specializationDropdown').on('click', '.dropdown-item', function () {
+        let specializationChoice = $(this).attr('data-value');
+        
+        $('#specializationDropdown').attr('data-selected', specializationChoice);
+        
+        $('#dropdownMenuSpecialization').text(specializationChoice);
+
+        let appointmentsTable = $('#appointmentsTable').DataTable();
+
+        $.fn.dataTable.ext.search.length = 0;
+        $.fn.dataTable.ext.search.push(function (settings, data) {
+            let specialization = data[3].trim();
+            if (specializationChoice === "All" || specializationChoice === undefined) {
+                return true;
+            }
+            return specialization === specializationChoice;
+        });
+        appointmentsTable.draw();
+    });
 
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    
 });
