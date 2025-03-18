@@ -548,13 +548,9 @@ $(document).ready(function () {
     // add a new appointment 
     $('#addAppointmentBtn').on('click', function(){      
         let doctors=JSON.parse(localStorage.getItem('Doctors')) || [];
-        doctorsName=[],
-        $('.doctorName ul').empty();
+        $('.doctorNameAppointment ul').empty();
         doctors.forEach(
             doctor => {
-                doctorsName.push(doctor.name);
-                // console.log(doctor.name)
-                //
                 let doctorName= `<li><a class="dropdown-item" href="#" id='doctorNameAppointment' name='doctorNameAppointment' value='${doctor.name}'>${doctor.name}</a></li>`;
                 $('.doctorNameAppointment ul').append(doctorName);
             }
@@ -638,6 +634,8 @@ $(document).ready(function () {
             appointments.push(appointment);
             localStorage.setItem('Appointments',JSON.stringify(appointments));
         }
+        $('.dropdown-toggle-doctor').text('Doctors'); 
+        $('.dropdown-toggle-specialization').text('Specialization'); 
         $('#appointmentForm')[0].reset();
         $('#appointmentModal').modal('hide');
         showNotification("Appointment added successfuly!");
