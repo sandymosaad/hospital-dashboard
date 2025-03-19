@@ -450,7 +450,7 @@ $(document).ready(function () {
 
     // clear all data 
     $('#deleteAllDoctorsBtn').on('click', function () {
-        localStorage.clear('Doctors');
+        localStorage.removeItem('Doctors');
         displayDoctorsData();
         showNotification('ALL Doctors deleted succsessfully!');
     })
@@ -677,7 +677,7 @@ $(document).ready(function () {
     }
     // clear all appointments
     $('#deleteAllAppointmentsBtn').on('click', function (){
-        localStorage.clear('Appointments');
+        localStorage.removeItem('Appointments');
         displayAppointmentsData();
         showNotification('All Appointments deleted succsessfully!')
     })
@@ -698,6 +698,7 @@ $(document).ready(function () {
         $('#timeAppointment').val(appointmentForUpdate.time);
         $('#dateAppointment').val(formattedDate);
         $(`input[name="statusAppointment"][value="${appointmentForUpdate.status}"]`).prop('checked',true);
+
         showItemsInDropDownListDoctorsAndSpecialization()
         $('#appointmentModal').modal('show');
         $('#updateAppointmentBtn').removeClass('d-none').show();
@@ -833,5 +834,5 @@ $(document).ready(function () {
     };
 
 
-
+//CLEAR => DROPDOWN NOT SHOW DOCTORS NAMES AND SPIACIALZTION
 });
