@@ -728,8 +728,6 @@ $(document).ready(function () {
 
     })
 
-
-
     //filter
     //1- specializations filter
     let specializations = JSON.parse(localStorage.getItem('Departments'));
@@ -792,10 +790,22 @@ $(document).ready(function () {
         applyFilters();
     });
 
+    function getStartEndDate(){
+        let startDate= $('#startDate').val();
+        let endDate =$ ('#endDate').val();
+        return {'start':startDate,'end':endDate}
+    }
+    $('#filterDateBtn').on('click', function(){
+        applyFilters()
+    })
     function applyFilters() {
         let specializationChoice = $('#specializationDropdown').attr('data-selected') || "All";
         let doctorChoice = $('#doctorsNameDropdown').attr('data-selected') || "All";
         let statusChoice = $('#statusAppiontmentDropdown').attr('data-selected') || "All";
+
+        let date=getStartEndDate()
+        let startDate = date.start ? new Date(date.start) : null;
+        let endDate = date.end ? new Date(date.end) : null;
 
         $.fn.dataTable.ext.search = []; 
         
@@ -804,14 +814,23 @@ $(document).ready(function () {
             let doctorName = data[1].trim();
             let status = data[6].trim();
 
+            let dateValue  = data[4].trim().split("/").reverse().join("-");
+            let dateWithFormat = new Date(dateValue);
+
+
             let specializationMatch = (specializationChoice === "All" || specialization === specializationChoice);
             let doctorMatch = (doctorChoice === "All" || doctorName === doctorChoice);
             let statusMatch = (statusChoice === "All" || status === statusChoice);
 
-            return specializationMatch && doctorMatch && statusMatch;
+            let dateMatch = true;
+            if (startDate && endDate) {
+                dateMatch = (dateWithFormat >= startDate && dateWithFormat <= endDate);
+            }
+
+            return specializationMatch && doctorMatch && statusMatch && dateMatch;
         });
-        appointmentsTable.draw();
-    }
+        appointmentTable.draw()
+    };
 
 
 

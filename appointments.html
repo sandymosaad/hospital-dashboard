@@ -154,7 +154,19 @@
                             </ul>
                         </span>
                     </th>
-                    <th>Date</th>
+                    <th>Date
+                        <span class="dropdown m-3" id="dateAppiontmentDropdown" >
+                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuDate" data-bs-toggle="dropdown" aria-expanded="false">
+                                Filter
+                            </button>
+                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuDate">
+                                <!-- dropdown-items-->
+                                <li> <label>From</label><input type="date" class="dropdown-item" id="startDate"></li>
+                                <li> <label>To</label> <input type="date" class="dropdown-item" id="endDate"></li>
+                                <button class="btn btn-secondary" id="filterDateBtn">filter</button>
+                            </ul>
+                        </span>
+                    </th>
                     <th>Time</th>
                     <th>Status
                         <span class="dropdown m-3" id="statusAppiontmentDropdown" data-selected="All">
