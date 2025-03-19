@@ -557,7 +557,10 @@ $(document).ready(function () {
         $('#appointmentForm')[0].reset();
         $('.dropdown-toggle-doctor').text('Doctors');
         $('.dropdown-toggle-specialization').text('Specializations'); 
- 
+        showItemsInDropDownListDoctorsAndSpecialization()
+    })
+
+    function showItemsInDropDownListDoctorsAndSpecialization(){
         let doctors=JSON.parse(localStorage.getItem('Doctors')) || [];
         $('.doctorNameAppointment ul').empty();
         doctors.forEach(
@@ -574,7 +577,7 @@ $(document).ready(function () {
                 $('.specializationAppointment ul').append(departmentName);
             }
         )
-    })
+    }
     let selectedDoctor = ''; 
     let selectedSpecializationAppointment = '';
     $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
@@ -695,7 +698,7 @@ $(document).ready(function () {
         $('#timeAppointment').val(appointmentForUpdate.time);
         $('#dateAppointment').val(formattedDate);
         $(`input[name="statusAppointment"][value="${appointmentForUpdate.status}"]`).prop('checked',true);
-        
+        showItemsInDropDownListDoctorsAndSpecialization()
         $('#appointmentModal').modal('show');
         $('#updateAppointmentBtn').removeClass('d-none').show();
         $('#saveAppointmentBtn').hide();
@@ -788,7 +791,6 @@ $(document).ready(function () {
         $('#dropdownMenuStatus').text(statusChoice);
         applyFilters();
     });
-
 
     function applyFilters() {
         let specializationChoice = $('#specializationDropdown').attr('data-selected') || "All";
