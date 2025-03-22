@@ -26,13 +26,16 @@ if (window.location.href.includes("dashboard")) {
                     });   
             })
         }
+
         let patients = JSON.parse(localStorage.getItem('Patients')) || []; 
         //console.log("Patients Data:", patients);
     
         let specializations = [];
         let labels = new Set();
         let patientCounts = {};
-    
+        let maleCount=0;
+        let femaleCount=0;
+
         patients.forEach(patient => {
             let spec = patient.specializationPatient;
             if (!labels.has(spec)) {
@@ -40,6 +43,12 @@ if (window.location.href.includes("dashboard")) {
             }
             specializations.push(spec);
             patientCounts[spec] = (patientCounts[spec] || 0) + 1;
+
+            if(patient.gender==='Male'){
+                maleCount+=1
+            }else if (patient.gender==='Female'){
+                femaleCount+=1
+            }
         });
     
         // console.log("Specializations:", specializations);
@@ -71,6 +80,25 @@ if (window.location.href.includes("dashboard")) {
                 }]
             }
         });
+
+        // gender chart
+        let genders = ["Male", "Female"];
+        let genderCounts = [maleCount, femaleCount];  
+
+        let ctx2 = document.getElementById("genderChart").getContext("2d");
+        new Chart(ctx2, {
+            type: "pie",
+            data: {
+                labels: genders,
+                datasets: [{
+                    label: "Ratio of males and females",
+                    data: genderCounts,
+                    backgroundColor: ["#3498db", "#e74c3c"],
+                }]
+            }
+        });
+
+        
     
     });
 }
