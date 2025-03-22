@@ -37,9 +37,11 @@ if (window.location.href.includes("dashboard")) {
         let femaleCount=0;
         let countAgeAvraige={ 'under 15':0, 'from 16 to 30':0, 'from 31 to 50':0, 'abave 50':0};
         let ageLabels= ['under 15', 'from 16 to 30', 'from 31 to 50', 'abave 50']
-
+        let statusCount = { 'Recovered': 0, 'Stable': 0, 'Under Treatment': 0, 'Chronic': 0 };
+        let statusLabel = ['Recovered', 'Stable', 'Under Treatment', 'Chronic'];
 
         patients.forEach(patient => {
+                        // departments
             let spec = patient.specializationPatient;
             if (!labels.has(spec)) {
                 labels.add(spec);
@@ -47,11 +49,14 @@ if (window.location.href.includes("dashboard")) {
             specializations.push(spec);
             patientCounts[spec] = (patientCounts[spec] || 0) + 1;
 
+            // patient gender
             if(patient.gender==='Male'){
                 maleCount+=1
             }else if (patient.gender==='Female'){
                 femaleCount+=1
             }
+
+            // patient age
             if (patient.age <= 15){
                 countAgeAvraige['under 15']= (countAgeAvraige['under 15'] || 0) + 1;
             }else if (patient.age > 15 && patient.age <= 30){
@@ -61,28 +66,23 @@ if (window.location.href.includes("dashboard")) {
             }else if (patient.age > 50 ){
                 countAgeAvraige['abave 50']= (countAgeAvraige['abave 50'] || 0)+1;
             }
-             console.log(countAgeAvraige)
+
+            // patient status
+            let sta = patient.status;
+            statusCount[sta] = (statusCount[sta] || 0) + 1;
         });
-    
-        // console.log("Specializations:", specializations);
-        // console.log("Labels (Set):", labels);
-        // console.log("Patient Counts (Object):", patientCounts);
     
         let labelsArray = [...labels]; 
         let countsArray = labelsArray.map(spec => patientCounts[spec]); 
-       // let ageCountArray = countAgeAvraige.map(key =>ageCountArray[key]);
         let ageCountArray = ageLabels.map(label => countAgeAvraige[label] || 0);
+        let statusCountArray = statusLabel.map(stat => statusCount[stat] || 0);
 
-        // console.log("Labels (Array):", labelsArray);
-        // console.log("Patient Counts (Array):", countsArray);
-    
         function generateRandomColor() {
             return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
         }
     
         let backgroundColors = labelsArray.map(() => generateRandomColor());
     
-        // console.log("Generated Colors:", backgroundColors);
         let ctx1 = document.getElementById("patientsChart").getContext("2d");
         new Chart(ctx1, {
             type: "bar",
@@ -127,6 +127,20 @@ if (window.location.href.includes("dashboard")) {
             
         })
 
+        // status chart
+        let ctx4 = document.getElementById('statusChart').getContext('2d');
+        new Chart (ctx4,{
+            type:'line',
+            data:{
+                labels:statusLabel,
+                datasets:[{
+                    label:'Ratio of Status of Patients',
+                    data:statusCountArray,
+                    backgroundColor: ["#3498db"]
+
+                }]
+            }
+        })
 
     
     });
