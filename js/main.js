@@ -1,6 +1,6 @@
 $(document).ready(function () {
-    let namePattern = /^[a-z A-Z]{3,}$/;
-    //let hasError =false;
+    let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery'];
+    localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
 
     // hospital data
     $.getJSON("js/hospitalData.json", function (data) {
@@ -29,202 +29,495 @@ $(document).ready(function () {
         }
     );
 
-    // patients data
-    let table = $('#patientsTable').DataTable();
-    $.getJSON("js/patients.json", function (data) {
-        let patients =JSON.parse( localStorage.getItem('patients'));
-        if(!patients){
-            localStorage.setItem("patients", JSON.stringify(data));
-            //console.log(data);
-            displayPatientData();
-        }else{
-            displayPatientData();
-        }
-    });
-    
-    function displayPatientData() {
-    let patients = JSON.parse(localStorage.getItem("patients"));
-    table.clear()
+    // display data
+    let patientsTable = $('#patientsTable').DataTable();
+    let doctorsTable = $('#doctorsTable').DataTable();
+    let appointmentsTable=$('#appointmentsTable').DataTable()
 
-    if(patients){
-        patients.forEach(patient => {
-            table.row.add([
-                patient.id,
-                patient.name,
-                patient.age,
-                patient.gender,
-                patient.address,
-                patient.phone,
-                patient.status,
-                patient.disease,
-                `<div>   
-                    <button class="btn btn-outline-danger mb-3 deletePatient" data-id="${patient.id}">Delete</button>                            
-                    <button class=" btn btn-outline-warning updatePatient" data-id="${patient.id}">Update</button>
-                </div>`
-            ]).draw(); 
+    function displayData(table, storageKey, columns) {
+        let data = JSON.parse(localStorage.getItem(storageKey));
+        table.clear();
+        if(data && data.length > 0) {
+            data.forEach(item => {
+                let rowData = columns.map(column=>item[column] || "No Data")
+                rowData.push(`
+                    <div>   
+                        <button class="btn btn-outline-danger deleteItem" data-id="${item.id}" data-type="${storageKey}"  data-columns='${JSON.stringify(columns)}'>Delete</button>                            
+                        <button class="btn btn-outline-warning editItem" data-id="${item.id}" data-type="${storageKey}"  data-columns='${JSON.stringify(columns)}'>Edit</button>
+                    </div>
+                `);
+                table.row.add(rowData);
+            })
+        } else {
+            table.row.add(Array(columns.length + 1).fill("No Data")); 
+        }
+        table.draw();
+    }
+    displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease']);
+    displayData(doctorsTable, 'Doctors', ['id', 'name', 'specialization', 'email', 'phone', 'status']);
+    displayData(appointmentsTable, 'Appointments', ['id', 'doctorName', 'patientName', 'specialization', 'date', 'time', 'status']);
+
+
+    //rest form
+    function resetForm(formId, saveBtnId, updateBtnId, dropdowns = {}) {
+        $(formId)[0].reset();
+        $(saveBtnId).show();  
+        $(updateBtnId).addClass('d-none').hide(); 
+    
+        Object.keys(dropdowns).forEach(selector => {
+            $(selector).text(dropdowns[selector]);
         });
-
-    }else{
-        table.row.add([
-            'No Data',
-            'No Data',
-            'No Data',
-            'No Data',
-            'No Data',
-            'No Data',
-            'No Data',
-            'No Data',
-            'No Data',
-        ]).draw();
- 
     }
-    }
-    // open model for add patieb=nt
     $('.addPatientBtn').on('click', function () {
-        $('#patientForm')[0].reset(); 
-        $('#id').prop("readonly", false); 
-        $('#savePatientBtn').show();
-        $('#updatePatientBtn').addClass('d-none').hide(); 
-        $('#patientModal').modal('show');
+        resetForm('#patientsForm','#savePatientBtn','#updatePatientBtn' )
+        $('#saveItemBtn').show();
+        $('#updateItemBtn').addClass('d-none').hide();
+    })
+    $('#addDoctorBtn').on('click', function(){
+        resetForm('#doctorsForm', '#saveDoctorBtn', '#updateDoctorBtn');
+        $('#saveItemBtn').show();
+        $('#updateItemBtn').addClass('d-none').hide();
     });
-    // add new patient
-    $('#savePatientBtn').on('click', function () {
-        let id = parseInt($('#id').val());
-        let name = $('#name').val();
-        let age = parseInt($('#age').val());
-        let address = $('#address').val();
-        let phone = $('#phone').val();
-        let disease = $('#disease').val();
-        let gender = $('input[name="gender"]:checked').next('label').text();
-        let status = $('input[name="status"]:checked').next('label').text();
+    $('#addAppointmentBtn').on('click', function(){      
+        resetForm('#appointmentsForm', '#saveAppointmentBtn', '#updateAppointmentBtn', {
+            '.dropdown-toggle-doctor': 'Doctors',
+            '.dropdown-toggle-specialization': 'Specializations'
+        });
+        $('#saveItemBtn').show();
+        $('#updateItemBtn').addClass('d-none').hide();
+    
+        showItemsInDropDownListDoctorsAndSpecialization(); 
+    });
+    function showItemsInDropDownListDoctorsAndSpecialization(){
+        let doctors=JSON.parse(localStorage.getItem('Doctors')) || [];
+        $('.doctorNameAppointment ul').empty();
+        doctors.forEach(
+            doctor => {
+                let doctorName= `<li><a class="dropdown-item" href="#" id='doctorNameAppointment' name='doctorNameAppointment' value='${doctor.name}'>${doctor.name}</a></li>`;
+                $('.doctorNameAppointment ul').append(doctorName);
+            }
+        )
+        let departments = JSON.parse(localStorage.getItem("Departments"))|| []
+        $('.specializationAppointment ul').empty();
+        departments.forEach(
+            department => {
+                let departmentName = `<li><a class="dropdown-item" href="#">${department}</a></li>`;
+                $('.specializationAppointment ul').append(departmentName);
+            }
+        )
+    }
 
-        let hasError = false;
-        if (!id || !name || !age || !gender || !address || !phone || !status || !disease) {
-            alert('Please fill all fields!');
-            return;
-        }
-        let patients = JSON.parse(localStorage.getItem("patients"));   
-        hideErorr();
-
-        if (patients) { 
-            // vaildtion 
-            if (patients.some(patient => patient.id === id)) {
-                $(`#idError`).text('ID already exists!').show();
-                hasError = true;
-            }  
-        }          
-            let phonePattern = /^01[0125][0-9]{8}$/;
-            if(!phonePattern.test(phone)){
-                $(`#phoneError`).text('Enter Right phone number!').show();
-                hasError = true;
-            }
-
-            let namePattern = /^[a-z A-Z]{3,}$/;
-            if(!namePattern.test(name)){
-                $(`#nameError`).text('Enter Right name!').show();
-                hasError = true;
-            }
-            let addressPattern = /^[A-Za-z0-9\s\-_\/]{3,}$/;
-            if(!addressPattern.test(address)){
-                $(`#addressError`).text('Enter a valid address!').show();
-                hasError = true;
-            }
-            let diseasePattern = /^[A-Za-z\u0600-\u06FF0-9\s\-_\/]{3,}$/;
-            if(!diseasePattern.test(disease)){
-                $(`#diseaseError`).text('Enter a valid disease name!').show();
-                hasError = true;
-            }
-            if(hasError){
-                return
-            }
-        
-            let patient ={'id': id, "name": name, "age": age, "gender": gender, "address": address, "phone": phone, "status": status, "disease": disease }
-            if(patients){
-            patients.push(patient);
-            localStorage.setItem("patients", JSON.stringify(patients));
+    // add new user
+    function getFormData(formId, extraFields = {}) {
+        let formData = {};
+    
+        $(formId + ' input').each(function () {
+            let attrType = $(this).attr('type');
+            let attrName = $(this).attr('name');
+    
+            if (attrType == 'radio') {
+                if ($(this).is(':checked')) {
+                    formData[attrName] = $(this).val(); 
+                }
             } else {
-                localStorage.setItem("patients", JSON.stringify([patient]));
+                formData[attrName] = $(this).val();
             }
-        
-        $('#patientForm input, #patientForm select').val('');
-        $('#patientModal').modal('hide'); 
-        showNotification("Patient added successfully!");
-        displayPatientData();
+        });
+        Object.assign(formData, extraFields);
+        console.log(formId)
+        console.log(formData)
+        return formData;
+    }
+    $('#saveItemBtn').on('click', function () {
+        let idForm = $(this).attr('data-IdForm')
+        let extraData = {};
+        if (selectedDoctor) extraData['doctorName'] = selectedDoctor;
+        if (selectedSpecializationAppointment) extraData['specialization'] = selectedSpecializationAppointment;
+
+        let data = getFormData(`#${idForm}`, extraData);
+            if (idForm === 'patientsForm'){
+                validateData('patient',data)
+            } else if(idForm === 'doctorsForm'){
+                validateData('doctor',data)
+            }else if(idForm === 'appointmentsForm'){
+                validateData('appointment',data)
+            }
     });
 
-    function hideErorr(){
-        $('#idError, #nameError, #phoneError, #diseaseError, #addressError').hide();
-    }
-      // delete patient
-    $('#patientsTable tbody').on("click", ".deletePatient", function () {
-        let id = $(this).data("id");
-        deletePatient(id);
+    let selectedDoctor = '';
+    let selectedSpecializationAppointment = '';
+
+    $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
+        event.preventDefault();
+        selectedDoctor = $(this).text();
+        $('.dropdown-toggle-doctor').text(selectedDoctor);
     });
-    function deletePatient(id){
-        let patients = JSON.parse(localStorage.getItem("patients"));
-        patientsAfterRemovePatient= patients.filter(patient=>patient.id!=id)
-        localStorage.setItem("patients", JSON.stringify(patientsAfterRemovePatient));
-        displayPatientData();
-        showNotification('Patient deleted succsessfully!');
-    }
-    
-    // update patient 
-    $("#patientsTable tbody").on("click", ".updatePatient", function(){
-        let id=$(this).data("id");
-        //console.log(id);
-        //$('#patientModal').modal('show');
-        updatePatient(id);
-    })
-    function updatePatient(id){
-        let patients = JSON.parse(localStorage.getItem("patients"));
-        //console.log(id)
-        //console.log(patients)
-        let patientForUpdate= patients.find(patient=>patient.id===id)
-        //console.log(patientForUpdate)
-        if(patientForUpdate){
-            $('#id').val(patientForUpdate.id).prop("readonly", true);
-            $('#name').val(patientForUpdate.name);
-            $('#age').val(patientForUpdate.age);
-            $('#address').val(patientForUpdate.address);
-            $('#phone').val(patientForUpdate.phone);
-            $('#disease').val(patientForUpdate.disease);
-            $(`input[name="gender"][value= "${patientForUpdate.gender}"]`).prop("checked", true);
-            $(`input[name="status"][value= "${patientForUpdate.status}"]`).prop('checked', true)
+
+
+    $('.specializationAppointment ul').on('click', 'li a', function (event) {
+        event.preventDefault();
+        selectedSpecializationAppointment = $(this).text();
+        $('.dropdown-toggle-specialization').text(selectedSpecializationAppointment);
+    });
+
+
+    // vaildation
+    function validateData(type, data) {
+        let hasError = false;
+
+        for (let key in data) {
+            if (!data[key] && (key !== 'id' && key !=='idDoctor' && key !=='idAppointment'))  {
+                console.log(data)
+                console.log(key)
+                showNotification('Please fill all fields!', 'alert-danger');
+                return;
+            }
         }
-        $('#savePatientBtn').hide();
-        $('#updatePatientBtn').removeClass('d-none').show();
-        $('#patientModal').modal('show');
+        switch (type) {
+        case "appointment":
+            hasError = validateAppointment(data);
+            if (!hasError) {
+                hideErrors('#dateAppointmentError, #patientNameAppointmentError');
+                let appointment = {
+                    //id: data.idAppointment,
+                    doctorName: data.doctorName,
+                    patientName: data.patientNameAppointment,
+                    specialization: data.specialization,
+                    date: data.dateAppointment,
+                    time: data.timeAppointment,
+                    status: data.statusAppointment
+                };
+                console.log(data)
+
+                console.log(appointment)
+                addNewItem('Appointments', appointment, appointmentsTable, ['id', 'doctorName', 'patientName', 'specialization', 'date', 'time', 'status']);
+            }
+            break;
+        case "doctor":
+            hasError = validateDoctor(data);
+            if (!hasError) {
+                hideErrors('#nameDoctorError, #emailDoctorError, #phoneDoctorError, #specializationDoctorError');
+                let doctor = {
+                    name: data.nameDoctor,
+                    specialization: data.specializationDoctor,
+                    email: data.emailDoctor,
+                    phone: data.phoneDoctor,
+                    status: data.statusDoctor
+                };
+                addNewItem('Doctors', doctor, doctorsTable, ['id', 'name', 'specialization', 'email', 'phone', 'status']);
+            }
+            break;
+        case "patient":
+            hasError = validatePatient(data);
+            if (!hasError) {
+                hideErrors('#idError, #nameError, #phoneError, #diseaseError, #addressError');
+                    let patient = {
+                        name: data.name,
+                        age: data.age,
+                        gender: data.gender,
+                        address: data.address,
+                        phone: data.phone,
+                        status: data.status,
+                        disease: data.disease
+                    };
+                addNewItem('Patients', patient, patientsTable, ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease']);
+            }            
+            break;
+        }
     }
 
-    $('#updatePatientBtn').on('click', function(){
-        let id = parseInt($('#id').val());
-        let name = $('#name').val();
-        let age = parseInt($('#age').val());
-        let address = $('#address').val();
-        let phone = $('#phone').val();
-        let disease = $('#disease').val();
-        let gender = $('input[name="gender"]:checked').next('label').text();
-        let status = $('input[name="status"]:checked').next('label').text();
-        
-        let patientForUpdate ={'id': id, "name": name, "age": age, "gender": gender, "address": address, "phone": phone, "status": status, "disease": disease }
-        let patients = JSON.parse(localStorage.getItem("patients"));
-        patients= patients.filter(patient=>patient.id!=id);
-        patients.push(patientForUpdate)
-        localStorage.setItem('patients', JSON.stringify( patients))
-        deletePatient();
-        $('#patientModal').modal('hide');
-        showNotification('Patient updated succsessfully!');
-    })
+    function validateAppointment(data) {
+        let hasError = false;
+        //console.log(data)
+        let namePattern = /^[a-zA-Z ]{3,}$/;
 
-    $('#deleteAllPatientsBtn').on('click', function(){
-        console.log('ana yeslt 3nd el delete btn')
-        localStorage.clear('patients');
-        displayPatientData();
-        showNotification('ALL Patients deleted succsessfully!');
+        if (!namePattern.test(data.patientNameAppointment)) {
+            $('#patientNameAppointmentError').text('Please enter a valid name!').show();
+            hasError = true;
+        }
 
-    })
+        let today = new Date();
+        today.setHours(0, 0, 0, 0);
 
+        let appointmentDate = new Date(data.dateAppointment);
+        appointmentDate.setHours(0, 0, 0, 0);
+
+        if (appointmentDate.getTime() < today.getTime()) {
+            $('#dateAppointmentError').text('Enter a valid date!').show();
+            hasError = true;
+        }
+
+        return hasError;
+    }
+    function validateDoctor(data) {
+        let hasError = false;
+        let doctors = JSON.parse(localStorage.getItem("Doctors")) || [];
     
+        if (doctors.some(doctor => doctor.email === data.emailDoctor)) {
+            $('#emailDoctorError').text('Email already exists!').show();
+            hasError = true;
+        }
+        if (doctors.some(doctor => doctor.phone === data.phoneDoctor)) {
+            $('#phoneDoctorError').text('Phone already exists!').show();
+            hasError = true;
+        }
+        if (doctors.some(doctor => doctor.name === data.nameDoctor)) {
+            $('#nameDoctorError').text('Name already exists!').show();
+            hasError = true;
+        }
+    
+        let patterns = {
+            phone: /^01[0125][0-9]{8}$/,
+            name: /^[a-zA-Z ]{3,}$/,
+            email: /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/,
+            specialization: /^[a-zA-Z ]{3,}$/
+        };
+    
+        if (!patterns.phone.test(data.phoneDoctor)) {
+            $('#phoneDoctorError').text('Enter a valid phone number!').show();
+            hasError = true;
+        }
+        if (!patterns.name.test(data.nameDoctor)) {
+            $('#nameDoctorError').text('Enter a valid name!').show();
+            hasError = true;
+        }
+        if (!patterns.email.test(data.emailDoctor)) {
+            $('#emailDoctorError').text('Enter a valid email!').show();
+            hasError = true;
+        }
+        if (!patterns.specialization.test(data.specializationDoctor)) {
+            $('#specializationDoctorError').text('Enter a valid specialization!').show();
+            hasError = true;
+        }
+    
+        return hasError;
+    }
+    function validatePatient(data) {
+        let hasError = false;
+        let patterns = {
+            phone: /^01[0125][0-9]{8}$/,
+            name: /^[a-zA-Z ]{3,}$/,
+            address: /^[A-Za-z0-9\s\-_\/]{3,}$/,
+            disease: /^[A-Za-z\u0600-\u06FF0-9\s\-_\/]{3,}$/
+        };
+    
+        if (!patterns.phone.test(data.phone)) {
+            $('#phoneError').text('Enter a valid phone number!').show();
+            hasError = true;
+        }
+        if (!patterns.name.test(data.name)) {
+            $('#nameError').text('Enter a valid name!').show();
+            hasError = true;
+        }
+        if (!patterns.address.test(data.address)) {
+            $('#addressError').text('Enter a valid address!').show();
+            hasError = true;
+        }
+        if (!patterns.disease.test(data.disease)) {
+            $('#diseaseError').text('Enter a valid disease name!').show();
+            hasError = true;
+        }
+    
+        return hasError;
+    }
+
+    function hideErrors(selectors) {
+        $(selectors).hide();
+    }    
+
+    function addNewItem(type, item, table, fields) {
+
+        let items = JSON.parse(localStorage.getItem(type)) || [];
+    
+        if (items.length > 0) {
+            let lastId = items[items.length - 1].id;
+            item.id = lastId + 1;
+        } else {
+            item.id = 1;
+        }
+        let lowerCaseType = type.charAt(0).toLowerCase() + type.slice(1);
+        let upperCaseType = type.charAt(0).toUpperCase() + type.slice(1,-1);
+        // console.log(lowerCaseType)
+        // console.log(upperCaseType)
+
+        items.push(item);
+        localStorage.setItem(type, JSON.stringify(items));
+
+        $(`#${lowerCaseType}Form`)[0].reset();
+        $(`#${lowerCaseType}Modal`).modal('hide');
+    
+        showNotification(`${upperCaseType} added successfully!`);
+        displayData(table, type, fields);
+    }
+    
+    // delete item
+    $(document).on('click', '.deleteItem' ,function (){
+        let id = $(this).attr('data-id');
+        let storageKey = $(this).attr('data-type');
+        let columns = JSON.parse($(this).attr('data-columns')); 
+        let lowerCaseType = storageKey.charAt(0).toLowerCase() + storageKey.slice(1);    
+        let table = $(`#${lowerCaseType}Table`).DataTable();
+        //console.log(columns,storageKey,id)
+        deleteItem(id ,storageKey, columns,table);   
+    })
+
+    function deleteItem(id, storageKey , columns ,table ){
+        let data = JSON.parse(localStorage.getItem(storageKey))
+        let upperCaseType = storageKey.charAt(0).toUpperCase() + storageKey.slice(1,-1);
+        //console.log(data)
+        data =data.filter( item=> item.id!=id)
+        localStorage.setItem(storageKey,JSON.stringify(data));
+        showNotification(`${upperCaseType}  deleted succsessfuly!`)
+        displayData( table, storageKey ,columns);
+    }
+
+    // delete all items
+    $('#clearAllData').on('click', function (){
+        let storageKey= $(this).attr('data-type')
+        let lowerCaseType = storageKey.charAt(0).toLowerCase() + storageKey.slice(1); 
+        let table = $(`#${lowerCaseType}Table`).DataTable();
+        let data = JSON.parse(localStorage.getItem(storageKey)); 
+        let columns = data && data.length > 0 ? Object.keys(data[0]) : [];
+        //console.log(columns)
+        localStorage.removeItem(storageKey);
+        showNotification(`ALL ${storageKey} deleted succsessfully!`);
+        displayData(table , lowerCaseType ,columns);
+    })
+
+     // Notification
+    function showNotification(message,cla) {
+        $('#alert')
+            .text(message)
+            .addClass(cla || 'alert-success')
+            .hide()
+            .appendTo('body')
+            .fadeIn(300)
+            .delay(2000)
+            .fadeOut(500);
+    }
+
+    // update item
+    $(document).on('click', '.editItem', function(){
+        let id =Number( $(this).attr('data-id'));
+        let storageKey = $(this).attr('data-type');
+        let columns = JSON.parse($(this).attr('data-columns')); 
+
+        console.log(id,storageKey,columns)
+        updateItem(id,storageKey,columns)
+    })
+    function updateItem(id,storageKey,columns){
+        let lowerCaseType = storageKey.charAt(0).toLowerCase() + storageKey.slice(1);
+        $(`#${lowerCaseType}Modal`).modal('show');
+        $('#saveItemBtn').hide();
+        $('#updateItemBtn').removeClass('d-none').show();
+        
+        let data= JSON.parse(localStorage.getItem(storageKey));
+        //console.log(data)
+        id = Number(id);
+        data = data.find(item=>item.id===id)
+        //console.log(data)
+        switch (storageKey){
+        case "Patients" :
+                $('#id').val(data.id);
+                $('#name').val(data.name);
+                $('#age').val(data.age);
+                $('#address').val(data.address);
+                $('#phone').val(data.phone);
+                $('#disease').val(data.disease);
+                $(`input[name="gender"][value= "${data.gender}"]`).prop("checked", true);
+                $(`input[name="status"][value= "${data.status}"]`).prop('checked', true)
+        break;
+        case "Doctors" :
+            $('#idDoctor').val(data.id);
+            $('#nameDoctor').val(data.name);
+            $('#specializationDoctor').val(data.specialization);
+            $('#emailDoctor').val(data.email);
+            $('#phoneDoctor').val(data.phone);
+            $('#statusDoctor').val(data.status);
+            $(`input[name="statusDoctor"][value= "${data.status}"]`).prop('checked', true)
+        break;
+        case "Appointments":
+            let formattedDate = data.date.split("/").reverse().join("-"); 
+            $('#idAppointment').val(data.id)
+            $('#patientNameAppointment').val(data.patientName);
+            $('.dropdown-toggle-doctor').text(data.doctorName);
+            $('.dropdown-toggle-specialization').text(data.specialization);
+            $('#timeAppointment').val(data.time);
+            $('#dateAppointment').val(formattedDate);
+            $(`input[name="statusAppointment"][value="${data.status}"]`).prop('checked',true);
+
+            showItemsInDropDownListDoctorsAndSpecialization()
+        break;
+        };
+    }
+    $('#updateItemBtn').on('click', function(){
+
+        let storageKey = $(this).attr('data-type');
+        let lowerCaseTypeN = storageKey.charAt(0).toLowerCase() + storageKey.slice(1,-1);
+        let lowerCaseType = storageKey.charAt(0).toLowerCase() + storageKey.slice(1);
+
+        let item={}
+        let id ;
+        switch (storageKey){
+            case "Patients" :
+            id = parseInt($('#id').val());
+            let nameP = $('#name').val();
+            let age = parseInt($('#age').val());
+            let address = $('#address').val();
+            let phoneP = $('#phone').val();
+            let disease = $('#disease').val();
+            let gender = $('input[name="gender"]:checked').next('label').text();
+            let statusP = $('input[name="status"]:checked').next('label').text();
+            
+            item ={'id': id, "name": nameP, "age": age, "gender": gender, "address": address, "phone": phoneP, "status": statusP, "disease": disease }
+            
+            break;
+            case "Doctors" :
+                id = parseInt($('#idDoctor').val());
+                let name = $('#nameDoctor').val();
+                let specializationD = $('#specializationDoctor').val();
+                let email = $('#emailDoctor').val();
+                let phone = $('#phoneDoctor').val();
+                let statusD = $('input[name="statusDoctor"]:checked').next('label').text();
+
+            item = {"id": id, "name": name, "specialization": specializationD, "email": email, "phone": phone, "status": statusD}
+            
+            break;
+            case "Appointments":
+                id= parseInt($('#idAppointment').val());
+                let patientName= $('#patientNameAppointment').val();
+                let doctorName= $('.dropdown-toggle-doctor').text();
+                let specialization = $('.dropdown-toggle-specialization').text();
+                let time = $('#timeAppointment').val();
+                let date = $('#dateAppointment').val();
+                let status =  $(`input[name="statusAppointment"]:checked`).next('label').text()
+                let formattedDate = date.split("-").reverse().join("/"); 
+                item={'id':id , 'patientName':patientName, 'doctorName':doctorName, 'specialization':specialization, 'time':time, 'date':formattedDate, 'status':status  }
+            break;
+        };
+    let data =JSON.parse(localStorage.getItem(storageKey));
+    console.log(item)
+    data = data.filter(item=>item.id!=id);
+        data.push(item);
+
+    localStorage.setItem(storageKey ,JSON.stringify(data));
+
+    showNotification(`${lowerCaseTypeN} updated succsessfully!`);
+        if(storageKey==='Patients'){
+            displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease']);
+        }else if(storageKey==='Doctors'){
+            displayData(doctorsTable, 'Doctors', ['id', 'name', 'specialization', 'email', 'phone', 'status']);
+        }
+        else if(storageKey==='Appointments'){
+            displayData(appointmentsTable, 'Appointments', ['id', 'doctorName', 'patientName', 'specialization', 'date', 'time', 'status']);
+        }
+   // displayData(table, storageKey,columns );
+    $(`#${lowerCaseType}Form`)[0].reset();
+    $(`#${lowerCaseType}Modal`).modal('hide');
+
+    })
+
+    //-------------------------------------------------------------------------------------
     // dropdowns filter
     $('#statusDropdown .dropdown-item').on('click', function() {
         let table = $('#patientsTable').DataTable();
@@ -292,443 +585,8 @@ $(document).ready(function () {
         table.draw(); 
     });
 
-    //---------------------------------------------------------------doctors-----------------------------------------------------------------------
-    //---------------------------------------------------------------------------------------------------------------------
-    //----------------------------------------------------------------------------------------------------------------------
 
-    let tableOfDoctors = $('#doctorsTable').DataTable();
-    $.getJSON('js/doctors.json', function(doctorsData){
-        let doctors= JSON.parse(localStorage.getItem('Doctors'));
-        if(!doctors){
-            localStorage.setItem('Doctors',JSON.stringify(doctorsData));
-        }
-        displayDoctorsData();
-    })
-    function displayDoctorsData(){
-        let doctors = JSON.parse(localStorage.getItem('Doctors')) ;
-        //console.log(doctors);
-        if(doctors=== null){
-            tableOfDoctors.clear();
-        }else{
-            tableOfDoctors.clear();
-            doctors.forEach(doctor => {
-                tableOfDoctors.row.add([
-                    doctor.id,
-                    doctor.name,
-                    doctor.specialization,
-                    doctor.email,
-                    doctor.phone,
-                    doctor.status,
-                    `<div>   
-                    <button class="btn btn-outline-danger  deleteDoctor" data-id="${doctor.id}">Delete</button>                            
-                    <button class=" btn btn-outline-warning editDoctor" data-id="${doctor.id}">Edit</button>
-                </div>`
-                ]);
-            });
-        } tableOfDoctors.draw();
-        
-    }
-    // reset form
-    $('#addDoctorBtn').on('click', function(){
-        $('#doctorForm')[0].reset();
-        $('#updateDoctorBtn').addClass('d-none').hide();
-        $('#saveDoctorBtn').show();
-    })
-    // add a new doctor
-    $('#saveDoctorBtn').on('click', function(){        
-        getDoctorDataInput()
-    })
-    function getDoctorDataInput(){
-    let doctorData={}
-    $('#doctorForm input').each(function(){
-        let attrType= $(this).attr('type');
-        let attrName= $(this).attr('name');
-
-        if(attrType=='radio'){
-            if($(this).is(':checked')){
-                doctorData[attrName]=$(this).val();
-            }
-        }else{
-            doctorData[attrName]=$(this).val();
-        }
-    })
-    //console.log(doctorData);
-    vailditonDoctorData(doctorData);
-    }
-    function vailditonDoctorData(data){
-        if(   !data.nameDoctor || !data.emailDoctor || !data.phoneDoctor || !data.specializationDoctor || !data.statusDoctor){
-            showNotification('Please fill all fields!','alert-danger');
-            return;
-        }
-        let hasError = false;
-        let doctors =JSON.parse(localStorage.getItem("Doctors"));
-        if(doctors){
-            if(doctors.some(doctor=>doctor.email==data.emailDoctor)){
-                $(`#emailDoctorError`).text('Email already exists!').show();
-                hasError = true;
-            }
-            if(doctors.some(doctor=>doctor.phone==data.phoneDoctor)){
-                $(`#phoneDoctorError`).text('Phone already exists!').show();
-                hasError = true;
-            }
-            if(doctors.some(doctor=>doctor.name==data.nameDoctor)){
-                $(`#nameDoctorError`).text('Name already exists!').show();
-                hasError = true;
-            }
-        }
-        let phonePattern = /^01[0125][0-9]{8}$/;
-        if(!phonePattern.test(data.phoneDoctor)){
-            $(`#phoneError`).text('Enter Right phone number!').show();
-            hasError = true;
-        }
-        let namePattern = /^[a-z A-Z]{3,}$/;
-        if(!namePattern.test(data.nameDoctor)){
-            $(`#nameDoctorError`).text('Enter Right name!').show();
-            hasError = true;
-        }
-        let emailPattern = /^([a-zA-Z0-9_\-\.]+)@([a-zA-Z0-9_\-\.]+)\.([a-zA-Z]{2,5})$/;
-        if(!emailPattern.test(data.emailDoctor)){
-            $(`#emailDoctorError`).text('Enter Right email!').show();
-            hasError = true;
-        }
-        let specializationPattern = /^[a-z A-Z]{3,}$/;
-        if(!specializationPattern.test(data.specializationDoctor)){
-            $(`#specializationDoctorError`).text('Enter Right specialization!').show();
-            hasError = true;
-        }
-        if(hasError){
-            return
-        }else{
-            let doctor= {
-                "id": data.idDoctor,
-                "name": data.nameDoctor,
-                "specialization": data.specializationDoctor,
-                "email": data.emailDoctor,
-                "phone": data.phoneDoctor,
-                "status": data.statusDoctor
-            }
-            hideDoctorErorr();
-            addNewDoctor(doctor);
-        }
-    }
-    function addNewDoctor(doctor){
-        let doctors =JSON.parse(localStorage.getItem("Doctors"));
-        //console.log(doctors)
-        if(doctors.length>0){
-            let lastId= doctors[doctors.length-1].id
-            doctor['id']=lastId+1 
-            doctors.push(doctor);
-            localStorage.setItem("Doctors",JSON.stringify(doctors));
-        }else{
-            doctor['id']=1 
-           // console.log(doctor);
-            let doctors=[doctor];
-            localStorage.setItem("Doctors",JSON.stringify(doctors));
-        }
-        $('#doctorForm')[0].reset();
-        $('#doctorModal').modal('hide');
-        showNotification('Doctor added succsessfully!');
-        displayDoctorsData();
-    }
-    function hideDoctorErorr(){
-        $('#nameDoctorError, #emailDoctorError, #phoneDoctorError, #specializationDoctorError').hide();
-    }
-
-    // delete doctor
-    $('#doctorsTable tbody').on("click", ".deleteDoctor", function () {
-        let id = $(this).attr('data-id');
-        deleteDoctor(id);    
-    })
-    
-    function deleteDoctor(id){
-        let doctors =JSON.parse(localStorage.getItem("Doctors"));
-        let doctorsAfterRemoveDoctor= doctors.filter(doctor=>doctor.id!=id);
-        localStorage.setItem("Doctors",JSON.stringify(doctorsAfterRemoveDoctor));
-        showNotification('Doctor deleted succsessfully!');
-        displayDoctorsData();
-    }
-
-    // clear all data 
-    $('#deleteAllDoctorsBtn').on('click', function () {
-        localStorage.removeItem('Doctors');
-        displayDoctorsData();
-        showNotification('ALL Doctors deleted succsessfully!');
-    })
-    // edit doctor
-    $('#doctorsTable tbody').on("click", ".editDoctor", function () {
-        let id = $(this).attr('data-id');
-        updateDoctor(id);
-    })
-
-    function updateDoctor(id){
-        let doctors =JSON.parse(localStorage.getItem("Doctors"));
-        let doctor = doctors.find(doctor=>doctor.id==id);
-        $('#idDoctor').val(doctor.id);
-        $('#nameDoctor').val(doctor.name);
-        $('#specializationDoctor').val(doctor.specialization);
-        $('#emailDoctor').val(doctor.email);
-        $('#phoneDoctor').val(doctor.phone);
-        $('#statusDoctor').val(doctor.status);
-        $(`input[name="statusDoctor"][value= "${doctor.status}"]`).prop('checked', true)
-
-        $('#saveDoctorBtn').hide();
-        $('#updateDoctorBtn').removeClass('d-none').show();
-        $('#doctorModal').modal('show');
-    }
-
-    $('#updateDoctorBtn').on('click', function () {
-        let id = ($('#idDoctor').val());
-        let name = $('#nameDoctor').val();
-        let specialization = $('#specializationDoctor').val();
-        let email = $('#emailDoctor').val();
-        let phone = $('#phoneDoctor').val();
-        let status = $('input[name="statusDoctor"]:checked').next('label').text();
-
-        let  doctor = {"id": id, "name": name, "specialization": specialization, "email": email, "phone": phone, "status": status }
-        let doctors =JSON.parse(localStorage.getItem("Doctors"));
-        doctors = doctors.filter(doctor=>doctor.id!=id);
-        doctors.push(doctor);
-
-        localStorage.setItem("Doctors",JSON.stringify(doctors));
-        //console.log(doctor);
-        showNotification('Doctor updated succsessfully!');
-        displayDoctorsData();
-        $('#doctorForm')[0].reset();
-        $('#doctorModal').modal('hide');
-    })
-    
-    // Notification
-    function showNotification(message,cla) {
-        $('#alert')
-            .text(message)
-            .addClass(cla || 'alert-success')
-            .hide()
-            .appendTo('body')
-            .fadeIn(300)
-            .delay(2000)
-            .fadeOut(500);
-    }
-    
     //------------------------------------------------------------------------appointments------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------------------------------
-    //------------------------------------------------------------------------------------------------------------------------------------
-
-    let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery'];
-    localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
-
-    let appointmentTable=$('#appointmentsTable').DataTable()
-    $.getJSON('js/appointment.json',function(data){
-      //      console.log(data)
-    let appointments = JSON.parse(localStorage.getItem('Appointments'));
-    // if (!appointments){
-    //     localStorage.setItem("Appointments",JSON.stringify(data))
-    // }
-    displayAppointmentsData();
-    })
-    function displayAppointmentsData(){
-        let appointments= JSON.parse(localStorage.getItem("Appointments"));
-        //console.log(appointments)
-        if(appointments===null){
-            appointmentTable.clear()
-        }else{
-            appointmentTable.clear()
-            appointments.forEach(appointment=>
-                appointmentTable.row.add([
-                    appointment.id,
-                    appointment.doctorName,
-                    appointment.patientName,
-                    appointment.specialization,
-                    appointment.date,
-                    appointment.time,
-                    appointment.status,
-                    `<div>   
-                        <button class="btn btn-outline-danger  deleteAppointment" data-id="${appointment.id}">Delete</button>                            
-                        <button class=" btn btn-outline-warning editAppointment" data-id="${appointment.id}">Edit</button>
-                    </div>`
-                ])
-            )
-        }appointmentTable.draw()
-    }
-
-    // add a new appointment 
-    $('#addAppointmentBtn').on('click', function(){      
-        $('#updateAppointmentBtn').addClass('d-none').hide();
-        $('#saveAppointmentBtn').show();
-        $('#appointmentForm')[0].reset();
-        $('.dropdown-toggle-doctor').text('Doctors');
-        $('.dropdown-toggle-specialization').text('Specializations'); 
-        showItemsInDropDownListDoctorsAndSpecialization()
-    })
-
-    function showItemsInDropDownListDoctorsAndSpecialization(){
-        let doctors=JSON.parse(localStorage.getItem('Doctors')) || [];
-        $('.doctorNameAppointment ul').empty();
-        doctors.forEach(
-            doctor => {
-                let doctorName= `<li><a class="dropdown-item" href="#" id='doctorNameAppointment' name='doctorNameAppointment' value='${doctor.name}'>${doctor.name}</a></li>`;
-                $('.doctorNameAppointment ul').append(doctorName);
-            }
-        )
-        let departments = JSON.parse(localStorage.getItem("Departments"))|| []
-        $('.specializationAppointment ul').empty();
-        departments.forEach(
-            department => {
-                let departmentName = `<li><a class="dropdown-item" href="#">${department}</a></li>`;
-                $('.specializationAppointment ul').append(departmentName);
-            }
-        )
-    }
-    let selectedDoctor = ''; 
-    let selectedSpecializationAppointment = '';
-    $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
-        event.preventDefault();
-        selectedDoctor = $(this).text(); 
-        $('.dropdown-toggle-doctor').text(selectedDoctor); 
-    });
-    $('.specializationAppointment ul').on('click', 'li a', function(event){
-        event.preventDefault();
-        selectedSpecializationAppointment = $(this).text();
-        $('.dropdown-toggle-specialization').text(selectedSpecializationAppointment);
-    })
-    function getAppointmentDataInput(){
-        let patientName=$('#patientNameAppointment').val();
-        let date=$('#dateAppointment').val();
-        let time=$('#timeAppointment').val();
-        let status =$('input[name="statusAppointment"]:checked').next("label").text()
-        let appointmet={'patientName':patientName,'doctorName':selectedDoctor,'date':date,'time':time, 'specialization':selectedSpecializationAppointment, 'status':status}
-    //console.log(date)
-        vailditonAppointmentData(appointmet);
-    }
-    function vailditonAppointmentData(appointmentData){
-        // if(!appointmentData.patientName | !appointmentData.doctorName| !appointmentData.date |!appointmentData.time | !appointmentData.specialization){
-        //     showNotification('Please fill all fields!','alert-danger');
-        //     return;
-        // }
-        hasError= false
-        if(!namePattern.test(appointmentData.patientName)){
-            $('#patientNameAppointmentError').text('Please Enter Vaild Name!').show()
-            hasError=true;
-        }
-        let today = new Date();
-        today.setHours(0, 0, 0, 0);
-
-        let appointmentDate = new Date(appointmentData.date);
-        appointmentDate.setHours(0, 0, 0, 0); 
-
-        if (appointmentDate.getTime() < today.getTime()) {
-            $('#dateAppointmentError').text('Enter a valid date!').show();
-            hasError = true;
-        } else {
-          //  console.log('Valid date selected');
-        }
-
-        if(hasError){
-            return;
-        }else{
-            let selectedDate =appointmentDate.toLocaleDateString('en-GB')
-            let appointmet={'doctorName':selectedDoctor,'patientName':appointmentData.patientName,'specialization':selectedSpecializationAppointment ,'date':selectedDate,'time':appointmentData.time,'status':appointmentData.status}
-            hideAppointmentErorr();
-            addAppointment(appointmet);
-           // console.log(appointmet)
-        }
-    }
-    function addAppointment(appointment){
-        //console.log(appointment)
-        let appointments = JSON.parse(localStorage.getItem('Appointments'))
-            //console.log(appointments)
-        if(appointments!=null){
-            lastId= appointments[appointments.length-1].id
-            appointment.id=lastId+1
-            appointments.push(appointment);
-            localStorage.setItem('Appointments',JSON.stringify(appointments));
-        }else{
-            appointment.id=1,
-            //appointments.push(appointment);
-            localStorage.setItem('Appointments',JSON.stringify([appointment]));
-        }
-        $('.dropdown-toggle-doctor').text('Doctors'); 
-        $('.dropdown-toggle-specialization').text('Specialization'); 
-        $('#appointmentForm')[0].reset();
-        $('#appointmentModal').modal('hide');
-        showNotification("Appointment added successfuly!");
-        displayAppointmentsData();
-    }
-    function hideAppointmentErorr(){
-        $('#dateAppointmentError, #patientNameAppointmentError').hide();
-    }
-    $('#saveAppointmentBtn').on('click', function(){
-        getAppointmentDataInput()
-        // console.log('---save---')
-        // console.log (appointmet)
-    })
-    //delete a appointment
-    $('#appointmentsTable tbody').on('click ', ".deleteAppointment", function (){
-        let id = $(this).attr("data-id")
-        //console.log(id)
-        deleteAppointment(id);
-    })
-    function deleteAppointment(id){
-        let appointments = JSON.parse(localStorage.getItem('Appointments'))
-        appointments=appointments.filter(appointment=>appointment.id!=id)
-       // console.log (appointments)
-        localStorage.setItem('Appointments',JSON.stringify(appointments));
-        displayAppointmentsData();
-        showNotification('Appointment deleted succsessfuly!')
-    }
-    // clear all appointments
-    $('#deleteAllAppointmentsBtn').on('click', function (){
-        localStorage.removeItem('Appointments');
-        displayAppointmentsData();
-        showNotification('All Appointments deleted succsessfully!')
-    })
-    //edit appointment 
-    $('#appointmentsTable tbody').on('click',".editAppointment" ,function(){
-        let id = $(this).attr('data-id');
-       // console.log(id)
-        let appointments = JSON.parse(localStorage.getItem('Appointments'));
-        //console.log(appointments)
-        let appointmentForUpdate =appointments.find(appointmet=>appointmet.id==id)
-        let formattedDate = appointmentForUpdate.date.split("/").reverse().join("-"); 
-        // console.log(appointmentForUpdate)
-        // console.log(Object.keys(appointmentForUpdate)); 
-        $('#idAppointment').val(appointmentForUpdate.id)
-        $('#patientNameAppointment').val(appointmentForUpdate.patientName);
-        $('.dropdown-toggle-doctor').text(appointmentForUpdate.doctorName);
-        $('.dropdown-toggle-specialization').text(appointmentForUpdate.specialization);
-        $('#timeAppointment').val(appointmentForUpdate.time);
-        $('#dateAppointment').val(formattedDate);
-        $(`input[name="statusAppointment"][value="${appointmentForUpdate.status}"]`).prop('checked',true);
-
-        showItemsInDropDownListDoctorsAndSpecialization()
-        $('#appointmentModal').modal('show');
-        $('#updateAppointmentBtn').removeClass('d-none').show();
-        $('#saveAppointmentBtn').hide();
-    })
-    $('#updateAppointmentBtn').on('click', function(){
-        let appointments = JSON.parse(localStorage.getItem('Appointments'));
-        let id= parseInt($('#idAppointment').val());
-        let patientName= $('#patientNameAppointment').val();
-        let doctorName= $('.dropdown-toggle-doctor').text();
-        let specialization = $('.dropdown-toggle-specialization').text();
-        let time = $('#timeAppointment').val();
-        let date = $('#dateAppointment').val();
-        let status =  $(`input[name="statusAppointment"]:checked`).next('label').text()
-        let formattedDate = date.split("-").reverse().join("/"); 
-
-        appointments=appointments.filter(apppointment=>apppointment.id!=id);
-       // console.log(appointments)
-        let apppointment={'id':id, 'patientName':patientName, 'doctorName':doctorName, 'specialization':specialization, 'time':time, 'date':formattedDate, 'status':status  }
-        appointments.push(apppointment);
-        localStorage.setItem('Appointments', JSON.stringify(appointments));
-        showNotification('A appointment updated succsessfully!')
-        displayAppointmentsData()
-
-        $('#appointmentForm')[0].reset()
-        $('#appointmentModal').modal('hide');
-
-
-    })
-
     //filter
     //1- specializations filter
     let specializations = JSON.parse(localStorage.getItem('Departments'));
@@ -833,6 +691,4 @@ $(document).ready(function () {
         appointmentTable.draw()
     };
 
-
-//CLEAR => DROPDOWN NOT SHOW DOCTORS NAMES AND SPIACIALZTION
 });

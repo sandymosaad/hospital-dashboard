@@ -42,15 +42,15 @@
         </aside>
         <main class="mainContent">
             <h2>Appointments</h2>
-            <button type="button" id="addAppointmentBtn" class="btn addAppointmentBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentModal">
+            <button type="button" id="addAppointmentBtn" class="btn addAppointmentBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentsModal">
                 Add New Appointment
             </button>
-            <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="deleteAllAppointmentsBtn">
+            <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" data-type="Appointments" id="clearAllData">
                 Clear All Data
             </button>
 
             <!-- Modal -->
-            <div class="modal fade" id="appointmentModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+            <div class="modal fade" id="appointmentsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                 <div class="modal-dialog modal-dialog-centered modal-lg">
                     <div class="modal-content">
                         <div class="modal-header">
@@ -58,15 +58,15 @@
                             <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                         </div>
                         <div class="modal-body">
-                            <form id="appointmentForm">
+                            <form id="appointmentsForm">
                                 <div class="row">
                                     <input type="hidden" class="form-control" id="idAppointment" name="idAppointment">
-                                    <div class="col-md-6 d-none" >
+                                    <!-- <div class="col-md-6 d-none" >
                                         <input type="hidden" class="form-control" id="idAppointment" name="idAppointment" placeholder="Appointment Id" required>
-                                    </div>
+                                    </div> -->
                                     <div class="col-md-6"> 
                                         <label for="patientNameAppointment" class="form-label">Patient's Name</label>
-                                        <input type="text" class="form-control" id="patientNameAppointment" name=patientNameAppointment" placeholder="Enter Patient's Name" required>
+                                        <input type="text" class="form-control" id="patientNameAppointment" name="patientNameAppointment" placeholder="Enter Patient's Name" required>
                                         <span id="patientNameAppointmentError" style="color: brown; display: none;"></span>
                                     </div>
                                     <div class="dropdown col-md-6 doctorNameAppointment">
@@ -120,8 +120,8 @@
                         </div>
                         <div class="modal-footer">
                             <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                            <button type="button" class="btn btn-primary" id="saveAppointmentBtn">Save changes</button>
-                            <button type="button" class="btn btn-primary d-none" id="updateAppointmentBtn">Update Appointment</button>
+                            <button type="button" class="btn btn-primary" id="saveItemBtn" data-IdForm="appointmentsForm">Save changes</button>
+                            <button type="button" class="btn btn-primary d-none" data-type="Appointments" id="updateItemBtn">Update Appointment</button>
                         </div>
                     </div>
                 </div>

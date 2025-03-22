@@ -43,15 +43,15 @@
         <main class="mainContent">
             <h2>Doctors</h2>
                 <!-- Add Doctor Button -->
-                <button type="button" id="addDoctorBtn" class="btn addDoctorBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#doctorModal">
+                <button type="button" id="addDoctorBtn" class="btn addDoctorBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#doctorsModal">
                     Add Doctor
                 </button>
-                <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="deleteAllDoctorsBtn">
+                <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="clearAllData"  data-type="Doctors">
                     Clear All Data
                 </button>
 
                 <!-- Modal -->
-                <div class="modal fade" id="doctorModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                <div class="modal fade" id="doctorsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
                         <div class="modal-content">
                             <div class="modal-header">
@@ -59,13 +59,14 @@
                                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                             </div>
                             <div class="modal-body">
-                                <form id="doctorForm">
+                                <form id="doctorsForm">
                                     <div class="row">
-                                        <div class="col-md-6 d-none" >
+                                        <!-- <div class="col-md-6 d-none" > -->
                                             <!-- <label for="idDoctor" class="form-label">ID</label> -->
-                                            <input type="hidden" class="form-control" id="idDoctor" name="idDoctor" placeholder="Doctor Id" required>
+                                            <!-- <input type="hidden" class="form-control" id="idDoctor" name="idDoctor" placeholder="Doctor Id" required> -->
                                             <!-- <span id="idDoctorError" style="color: brown; display: none;"></span> -->
-                                        </div>
+                                            <input type="hidden" class="form-control" id="idDoctor" name="idDoctor" placeholder="Doctor Id" required>
+                                        <!-- </div> -->
                                         <div class="col-md-6">
                                             <label for="nameDoctor" class="form-label">Name</label>
                                             <input type="text" class="form-control" id="nameDoctor" name="nameDoctor" placeholder="Doctor Name" required>
@@ -106,8 +107,8 @@
                             </div>
                             <div class="modal-footer">
                                 <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                <button type="button" class="btn btn-primary" id="saveDoctorBtn">Save changes</button>
-                                <button type="button" class="btn btn-primary d-none" id="updateDoctorBtn">Update Doctor</button>
+                                <button type="button" class="btn btn-primary" id="saveItemBtn" data-IdForm="doctorsForm">Save changes</button>
+                                <button type="button" class="btn btn-primary d-none" data-type="Doctors" id="updateItemBtn">Update Doctor</button>
                             </div>
                         </div>
                     </div>
@@ -143,7 +144,7 @@
                 </tbody>  
                 </table>
             </div>  
-        </main>
+        </main> 
 
     </section>
     <div id="alert" style="display: none;" class="alert position-fixed top-0 end-0 m-3"></div>

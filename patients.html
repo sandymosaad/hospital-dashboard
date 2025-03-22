@@ -47,15 +47,15 @@
                     <h3 class="tableTitle text-center">Patients</h3>
                     
                     <!-- Add Patient Button -->
-                    <button type="button" class="btn addPatientBtn mb-3 d-block w-100 d-md-inline" data-bs-toggle="modal" data-bs-target="#patientModal">
+                    <button type="button" class="btn addPatientBtn mb-3 d-block w-100 d-md-inline" data-bs-toggle="modal" data-bs-target="#patientsModal">
                         Add Patient
                     </button>
-                    <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="deleteAllPatientsBtn">
+                    <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="clearAllData"  data-type="Patients">
                         Clear All Data
                     </button>
         
                     <!-- Modal -->
-                    <div class="modal fade" id="patientModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
+                    <div class="modal fade" id="patientsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered modal-lg">
                             <div class="modal-content">
                                 <div class="modal-header">
@@ -63,13 +63,14 @@
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <form id="patientForm">
+                                    <form id="patientsForm">
                                         <div class="row">
-                                            <div class="col-md-6">
+                                            <input type="hidden" class="form-control" id="id" name="id" placeholder="Patient Id" required>
+
+                                            <!-- <div class="col-md-6">
                                                 <label for="id" class="form-label">ID</label>
-                                                <input type="number" class="form-control" id="id" name="id" placeholder="Patient Id" required>
                                                 <span id="idError" style="color: brown; display: none;"></span>
-                                            </div>
+                                            </div> -->
                                             <div class="col-md-6">
                                                 <label for="name" class="form-label">Name</label>
                                                 <input type="text" class="form-control" id="name" name="name" placeholder="Patient Name" required>
@@ -129,8 +130,8 @@
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
-                                    <button type="button" class="btn btn-primary" id="savePatientBtn">Save changes</button>
-                                    <button type="button" class="btn btn-primary d-none" id="updatePatientBtn">Update patient</button>
+                                    <button type="button" class="btn btn-primary" id="saveItemBtn" data-IdForm="patientsForm">Save changes</button>
+                                    <button type="button" class="btn btn-primary d-none" data-type="Patients" id="updateItemBtn">Update patient</button>
     
                                 </div>
                             </div>
