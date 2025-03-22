@@ -1,33 +1,88 @@
+if (window.location.href.includes("dashboard")) {
+    $(document).ready(function () {
+         // hospital data
+        let departmentsLength = JSON.parse(localStorage.getItem('Departments')).length;
+        let doctorsLength= JSON.parse(localStorage.getItem('Doctors')).length;
+        let appointmentsLength= JSON.parse(localStorage.getItem('Appointments')).length;
+        let patientsLength = JSON.parse(localStorage.getItem('Patients')).length;
+
+        $("#totalPatients").text(patientsLength);
+        $("#totalDoctors").text(doctorsLength);
+        $("#totalAppointments").text(appointmentsLength);
+        $("#totalDepartments").text(departmentsLength);
+        let data = {"patients": patientsLength, "doctors": doctorsLength, "appointments": appointmentsLength, "departments": departmentsLength}
+        if (data){
+            $(".animatingNumberCounters").each(function () {
+                let $this = $(this);
+                let targetValue = parseInt($this.text()) || 0;
+                $({ Counter: 0 }).animate({
+                    Counter: targetValue},
+                    {
+                    duration: 1000,
+                    easing: 'swing',
+                    step: function() {
+                        $this.text(Math.ceil(this.Counter));
+                    }
+                    });   
+            })
+        }
+        let patients = JSON.parse(localStorage.getItem('Patients')) || []; 
+        //console.log("Patients Data:", patients);
+    
+        let specializations = [];
+        let labels = new Set();
+        let patientCounts = {};
+    
+        patients.forEach(patient => {
+            let spec = patient.specializationPatient;
+            if (!labels.has(spec)) {
+                labels.add(spec);
+            }
+            specializations.push(spec);
+            patientCounts[spec] = (patientCounts[spec] || 0) + 1;
+        });
+    
+        // console.log("Specializations:", specializations);
+        // console.log("Labels (Set):", labels);
+        // console.log("Patient Counts (Object):", patientCounts);
+    
+        let labelsArray = [...labels]; 
+        let countsArray = labelsArray.map(spec => patientCounts[spec]); 
+    
+        // console.log("Labels (Array):", labelsArray);
+        // console.log("Patient Counts (Array):", countsArray);
+    
+        function generateRandomColor() {
+            return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
+        }
+    
+        let backgroundColors = labelsArray.map(() => generateRandomColor());
+    
+        // console.log("Generated Colors:", backgroundColors);
+        let ctx1 = document.getElementById("patientsChart").getContext("2d");
+        new Chart(ctx1, {
+            type: "bar",
+            data: {
+                labels: labelsArray,
+                datasets: [{
+                    label: "Count Patients in each department",
+                    data: countsArray, 
+                    backgroundColor: backgroundColors, 
+                }]
+            }
+        });
+    
+    });
+}
+
+
+
+
+
+
 $(document).ready(function () {
-    let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery'];
+    let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery','Hematology'];
     localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
-
- // hospital data
-    let departmentsLength = JSON.parse(localStorage.getItem('Departments')).length;
-    let doctorsLength= JSON.parse(localStorage.getItem('Doctors')).length;
-    let appointmentsLength= JSON.parse(localStorage.getItem('Appointments')).length;
-    let patientsLength = JSON.parse(localStorage.getItem('Patients')).length;
-
-    $("#totalPatients").text(patientsLength);
-    $("#totalDoctors").text(doctorsLength);
-    $("#totalAppointments").text(appointmentsLength);
-    $("#totalDepartments").text(departmentsLength);
-    let data = {"patients": patientsLength, "doctors": doctorsLength, "appointments": appointmentsLength, "departments": departmentsLength}
-    if (data){
-        $(".animatingNumberCounters").each(function () {
-            let $this = $(this);
-            let targetValue = parseInt($this.text()) || 0;
-            $({ Counter: 0 }).animate({
-                Counter: targetValue},
-                {
-                duration: 1000,
-                easing: 'swing',
-                step: function() {
-                    $this.text(Math.ceil(this.Counter));
-                }
-                });   
-        })
-    }
 
     // display data
     let patientsTable = $('#patientsTable').DataTable();
@@ -53,7 +108,7 @@ $(document).ready(function () {
         }
         table.draw();
     }
-    displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease']);
+    displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease','specializationPatient']);
     displayData(doctorsTable, 'Doctors', ['id', 'name', 'specialization', 'email', 'phone', 'status']);
     displayData(appointmentsTable, 'Appointments', ['id', 'doctorName', 'patientName', 'specialization', 'date', 'time', 'status']);
 
@@ -72,6 +127,7 @@ $(document).ready(function () {
         resetForm('#patientsForm','#savePatientBtn','#updatePatientBtn' )
         $('#saveItemBtn').show();
         $('#updateItemBtn').addClass('d-none').hide();
+        showItemsInDropDownListSpecialization();
     })
     $('#addDoctorBtn').on('click', function(){
         resetForm('#doctorsForm', '#saveDoctorBtn', '#updateDoctorBtn');
@@ -106,6 +162,16 @@ $(document).ready(function () {
             }
         )
     }
+    function showItemsInDropDownListSpecialization(){
+        let departments = JSON.parse(localStorage.getItem("Departments"))|| []
+        $('.specializationPatient ul').empty();
+        departments.forEach(
+            department => {
+                let departmentName = `<li><a class="dropdown-item" href="#">${department}</a></li>`;
+                $('.specializationPatient ul').append(departmentName);
+            }
+        )
+    }
 
     // add new user
     function getFormData(formId, extraFields = {}) {
@@ -132,7 +198,9 @@ $(document).ready(function () {
         let idForm = $(this).attr('data-IdForm')
         let extraData = {};
         if (selectedDoctor) extraData['doctorName'] = selectedDoctor;
-        if (selectedSpecializationAppointment) extraData['specialization'] = selectedSpecializationAppointment;
+        if (selectedSpecializationAppointment ) extraData['specialization'] = selectedSpecializationAppointment;
+        if (selectedSpecialization) extraData['specializationPatient'] = selectedSpecialization;
+
 
         let data = getFormData(`#${idForm}`, extraData);
             if (idForm === 'patientsForm'){
@@ -146,6 +214,7 @@ $(document).ready(function () {
 
     let selectedDoctor = '';
     let selectedSpecializationAppointment = '';
+    let selectedSpecialization ='';
 
     $('.doctorNameAppointment ul').on('click', 'li a', function (event) {
         event.preventDefault();
@@ -158,6 +227,13 @@ $(document).ready(function () {
         event.preventDefault();
         selectedSpecializationAppointment = $(this).text();
         $('.dropdown-toggle-specialization').text(selectedSpecializationAppointment);
+    });
+
+    $('.specializationPatient ul').on('click', 'li a', function (event) {
+        event.preventDefault();
+        selectedSpecialization = $(this).text();
+        console.log(selectedSpecialization)
+        $('.dropdown-toggle-specializationPatient').text(selectedSpecialization);
     });
 
 
@@ -210,7 +286,7 @@ $(document).ready(function () {
         case "patient":
             hasError = validatePatient(data);
             if (!hasError) {
-                hideErrors('#idError, #nameError, #phoneError, #diseaseError, #addressError');
+                hideErrors(' #nameError, #phoneError, #diseaseError, #addressError');
                     let patient = {
                         name: data.name,
                         age: data.age,
@@ -218,9 +294,12 @@ $(document).ready(function () {
                         address: data.address,
                         phone: data.phone,
                         status: data.status,
-                        disease: data.disease
+                        disease: data.disease,
+                        specializationPatient: data.specializationPatient
+
                     };
-                addNewItem('Patients', patient, patientsTable, ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease']);
+                    console.log(data)
+                addNewItem('Patients', patient, patientsTable, ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease','specializationPatient']);
             }            
             break;
         }
@@ -424,6 +503,9 @@ $(document).ready(function () {
                 $('#address').val(data.address);
                 $('#phone').val(data.phone);
                 $('#disease').val(data.disease);
+                $('.dropdown-toggle-specializationPatient').text(data.specializationPatient);
+
+
                 $(`input[name="gender"][value= "${data.gender}"]`).prop("checked", true);
                 $(`input[name="status"][value= "${data.status}"]`).prop('checked', true)
         break;
@@ -466,10 +548,11 @@ $(document).ready(function () {
             let address = $('#address').val();
             let phoneP = $('#phone').val();
             let disease = $('#disease').val();
+            let specializationPatient = $('.dropdown-toggle-specializationPatient').text();
             let gender = $('input[name="gender"]:checked').next('label').text();
             let statusP = $('input[name="status"]:checked').next('label').text();
             
-            item ={'id': id, "name": nameP, "age": age, "gender": gender, "address": address, "phone": phoneP, "status": statusP, "disease": disease }
+            item ={'id': id, "name": nameP, "age": age, "gender": gender, "address": address, "phone": phoneP, "status": statusP, "disease": disease,"specializationPatient":specializationPatient }
             
             break;
             case "Doctors" :
@@ -504,7 +587,7 @@ $(document).ready(function () {
 
     showNotification(`${lowerCaseTypeN} updated succsessfully!`);
         if(storageKey==='Patients'){
-            displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease']);
+            displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease','specializationPatient']);
         }else if(storageKey==='Doctors'){
             displayData(doctorsTable, 'Doctors', ['id', 'name', 'specialization', 'email', 'phone', 'status']);
         }

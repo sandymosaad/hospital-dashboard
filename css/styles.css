@@ -3,6 +3,11 @@ body {
     padding: 0;
     font-family: Arial, sans-serif;
 }
+canvas {
+    display: block !important;
+    width: 300px !important;
+    height: auto !important;
+}
 
 /* Navbar */
 .navbarContainer {

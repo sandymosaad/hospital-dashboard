@@ -91,6 +91,15 @@
                                                 <input type="text" class="form-control" id="address" name="address" placeholder="Patient Address" required>
                                                 <span id="addressError" style="color: brown; display: none;"></span>
                                             </div>
+                                            <div class="dropdown col-md-6 specializationPatient">
+                                                <label for="specializationPatient" class="form-label">Specialization</label>
+                                                <button class="btn btn-secondary dropdown-toggle-specializationPatient" type="button" data-bs-toggle="dropdown" aria-expanded="false">
+                                                    Specialization
+                                                </button>
+                                                <ul class="dropdown-menu">
+                                                <!-- data-->
+                                                </ul>
+                                            </div>
                                         </div>
                                         <div class="row mt-3">
                                             <div class="col-md-6">
@@ -186,8 +195,10 @@
                                             </ul>
                                         </span>
                                     </th>   
-                                    <th>Disease </th>  
+                                    <th>Disease </th>
+                                    <th>Specialization </th>    
                                     <th>Actions</th>
+                                    
                                 </tr>
                             </thead>
                             <tbody>
