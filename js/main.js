@@ -35,6 +35,9 @@ if (window.location.href.includes("dashboard")) {
         let patientCounts = {};
         let maleCount=0;
         let femaleCount=0;
+        let countAgeAvraige={ 'under 15':0, 'from 16 to 30':0, 'from 31 to 50':0, 'abave 50':0};
+        let ageLabels= ['under 15', 'from 16 to 30', 'from 31 to 50', 'abave 50']
+
 
         patients.forEach(patient => {
             let spec = patient.specializationPatient;
@@ -49,6 +52,16 @@ if (window.location.href.includes("dashboard")) {
             }else if (patient.gender==='Female'){
                 femaleCount+=1
             }
+            if (patient.age <= 15){
+                countAgeAvraige['under 15']= (countAgeAvraige['under 15'] || 0) + 1;
+            }else if (patient.age > 15 && patient.age <= 30){
+                countAgeAvraige['from 16 to 30']= (countAgeAvraige['from 16 to 30'] || 0)+1;
+            }else if (patient.age > 30 && patient.age <= 50){
+                countAgeAvraige['from 31 to 50']= (countAgeAvraige['from 31 to 50'] || 0)+1;
+            }else if (patient.age > 50 ){
+                countAgeAvraige['abave 50']= (countAgeAvraige['abave 50'] || 0)+1;
+            }
+             console.log(countAgeAvraige)
         });
     
         // console.log("Specializations:", specializations);
@@ -57,7 +70,9 @@ if (window.location.href.includes("dashboard")) {
     
         let labelsArray = [...labels]; 
         let countsArray = labelsArray.map(spec => patientCounts[spec]); 
-    
+       // let ageCountArray = countAgeAvraige.map(key =>ageCountArray[key]);
+        let ageCountArray = ageLabels.map(label => countAgeAvraige[label] || 0);
+
         // console.log("Labels (Array):", labelsArray);
         // console.log("Patient Counts (Array):", countsArray);
     
@@ -97,8 +112,22 @@ if (window.location.href.includes("dashboard")) {
                 }]
             }
         });
+        // age chart
+        let ctx3 = document.getElementById('ageChart').getContext('2d');
+        new Chart (ctx3,{
+            type:'line',
+            data:{
+                labels:ageLabels,
+                datasets:[{
+                    label: 'Ratio of age of patients',
+                    data:ageCountArray,
+                    backgroundColor: ["#3498db"]
+                }]
+            }
+            
+        })
 
-        
+
     
     });
 }
@@ -536,6 +565,7 @@ $(document).ready(function () {
 
                 $(`input[name="gender"][value= "${data.gender}"]`).prop("checked", true);
                 $(`input[name="status"][value= "${data.status}"]`).prop('checked', true)
+                showItemsInDropDownListSpecialization();    
         break;
         case "Doctors" :
             $('#idDoctor').val(data.id);
