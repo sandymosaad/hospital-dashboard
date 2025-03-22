@@ -2,32 +2,32 @@ $(document).ready(function () {
     let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery'];
     localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
 
-    // hospital data
-    $.getJSON("js/hospitalData.json", function (data) {
-            //console.log(data);
-            $("#totalPatients").text(data.patients);
-            $("#totalDoctors").text(data.doctors);
-            $("#totalAppointments").text(data.appointments);
-            $("#totalDepartments").text(data.departments);
+ // hospital data
+    let departmentsLength = JSON.parse(localStorage.getItem('Departments')).length;
+    let doctorsLength= JSON.parse(localStorage.getItem('Doctors')).length;
+    let appointmentsLength= JSON.parse(localStorage.getItem('Appointments')).length;
+    let patientsLength = JSON.parse(localStorage.getItem('Patients')).length;
 
-            // animating number counters
-            if (data){
-                $(".animatingNumberCounters").each(function () {
-                    let $this = $(this);
-                    let targetValue = parseInt($this.text()) || 0;
-                    $({ Counter: 0 }).animate({
-                        Counter: targetValue},
-                        {
-                        duration: 1000,
-                        easing: 'swing',
-                        step: function() {
-                            $this.text(Math.ceil(this.Counter));
-                        }
-                        });   
-                })
-            }
-        }
-    );
+    $("#totalPatients").text(patientsLength);
+    $("#totalDoctors").text(doctorsLength);
+    $("#totalAppointments").text(appointmentsLength);
+    $("#totalDepartments").text(departmentsLength);
+    let data = {"patients": patientsLength, "doctors": doctorsLength, "appointments": appointmentsLength, "departments": departmentsLength}
+    if (data){
+        $(".animatingNumberCounters").each(function () {
+            let $this = $(this);
+            let targetValue = parseInt($this.text()) || 0;
+            $({ Counter: 0 }).animate({
+                Counter: targetValue},
+                {
+                duration: 1000,
+                easing: 'swing',
+                step: function() {
+                    $this.text(Math.ceil(this.Counter));
+                }
+                });   
+        })
+    }
 
     // display data
     let patientsTable = $('#patientsTable').DataTable();
