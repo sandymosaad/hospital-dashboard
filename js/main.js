@@ -72,32 +72,37 @@ if (window.location.href.includes("dashboard")) {
             let sta = patient.status;
             statusCount[sta] = (statusCount[sta] || 0) + 1;
         });
-
-
-        // Appointment Charts
-        let labelsStatusAppointments= new Set();
-        let statusAppointment ={}
-
-        appointments.forEach(appointment=>{
-        let sta= appointment.status;
-            labelsStatusAppointments.add(sta);
-            statusAppointment[sta]= (statusAppointment[sta] || 0) + 1;
-        })
-
-        let labelsStatusAppointmentsArray = [...labelsStatusAppointments]
-
-        let statusAppointmentCount = labelsStatusAppointmentsArray.map(sta => statusAppointment[sta] || 0)
-        console.log(labelsStatusAppointments)
-        console.log(statusAppointment)
-        console.log(statusAppointmentCount)
-
-
-
-    
         let labelsArray = [...labels]; 
         let countsArray = labelsArray.map(spec => patientCounts[spec]); 
         let ageCountArray = ageLabels.map(label => countAgeAvraige[label] || 0);
         let statusCountArray = statusLabel.map(stat => statusCount[stat] || 0);
+
+        // Appointment Charts
+        let labelsStatusAppointments= new Set();
+        let statusAppointment ={};
+
+        let doctorHaveAppointments = new Set();
+        let doctorHaveAppointmentsObj ={};
+
+        appointments.forEach(appointment=>{
+        let sta= appointment.status;
+        let doc = appointment.doctorName;
+
+            doctorHaveAppointments.add(doc);
+            labelsStatusAppointments.add(sta);
+            statusAppointment[sta]= (statusAppointment[sta] || 0) + 1;
+            doctorHaveAppointmentsObj[doc] =(doctorHaveAppointmentsObj[doc] || 0) + 1
+        })
+
+        let labelsStatusAppointmentsArray = [...labelsStatusAppointments]
+        let statusAppointmentCount = labelsStatusAppointmentsArray.map(sta => statusAppointment[sta] || 0)
+
+        let doctorHaveAppointmentsArray = [...doctorHaveAppointments];
+        let doctorHaveAppointmentsCount = doctorHaveAppointmentsArray.map(doc => doctorHaveAppointmentsObj[doc]|| 0)
+        // console.log(doctorHaveAppointmentsArray)
+        // console.log(doctorHaveAppointmentsCount)
+        // console.log(doctorHaveAppointmentsObj)
+
 
 
         function generateRandomColor() {
@@ -166,10 +171,9 @@ if (window.location.href.includes("dashboard")) {
         })
 
         // status appointment chart
-        backgroundColors = labelsArray.map(() => generateRandomColor());
+        backgroundColors = labelsStatusAppointmentsArray.map(() => generateRandomColor());
         let ctx5 = document.getElementById('appointmentStatusChart').getContext('2d');
-        new Chart (
-            ctx5, {
+        new Chart (ctx5,{
                 type:'bar',
                 data:{
                     labels:labelsStatusAppointmentsArray,
@@ -179,9 +183,22 @@ if (window.location.href.includes("dashboard")) {
                         backgroundColor:backgroundColors
                     }]
                 }
+            })
+
+        // appointmentDoctorsChart
+        backgroundColors = doctorHaveAppointmentsArray.map(() => generateRandomColor());
+        let ctx6 = document.getElementById('appointmentDoctorsChart').getContext('2d');
+        new Chart (ctx6, {
+            type:'bar',
+            data:{
+                labels:doctorHaveAppointmentsArray,
+                datasets:[{
+                    label:'Number of appointments for each doctor',
+                    data:doctorHaveAppointmentsCount,
+                    backgroundColor:backgroundColors
+                }]
             }
-        )
-    
+        })
     });
 }
 
