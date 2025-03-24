@@ -84,21 +84,32 @@ if (window.location.href.includes("dashboard")) {
         let doctorHaveAppointments = new Set();
         let doctorHaveAppointmentsObj ={};
 
+        let specializationHasAppointments =new Set();
+        let specializationHasAppointmentsObj ={};
+
         appointments.forEach(appointment=>{
         let sta= appointment.status;
         let doc = appointment.doctorName;
+        let spec = appointment.specialization;
 
             doctorHaveAppointments.add(doc);
             labelsStatusAppointments.add(sta);
+            specializationHasAppointments.add(spec);
+
             statusAppointment[sta]= (statusAppointment[sta] || 0) + 1;
-            doctorHaveAppointmentsObj[doc] =(doctorHaveAppointmentsObj[doc] || 0) + 1
+            doctorHaveAppointmentsObj[doc] =(doctorHaveAppointmentsObj[doc] || 0) + 1;
+            specializationHasAppointmentsObj[spec]= (specializationHasAppointmentsObj[spec] || 0) +1;
         })
 
-        let labelsStatusAppointmentsArray = [...labelsStatusAppointments]
-        let statusAppointmentCount = labelsStatusAppointmentsArray.map(sta => statusAppointment[sta] || 0)
+        let labelsStatusAppointmentsArray = [...labelsStatusAppointments];
+        let statusAppointmentCount = labelsStatusAppointmentsArray.map(sta => statusAppointment[sta] || 0);
 
         let doctorHaveAppointmentsArray = [...doctorHaveAppointments];
-        let doctorHaveAppointmentsCount = doctorHaveAppointmentsArray.map(doc => doctorHaveAppointmentsObj[doc]|| 0)
+        let doctorHaveAppointmentsCount = doctorHaveAppointmentsArray.map(doc => doctorHaveAppointmentsObj[doc]|| 0);
+
+        let specializationHasAppointmentsArray =[...specializationHasAppointments];
+        let specializationHasAppointmentsCount = specializationHasAppointmentsArray.map(spec => specializationHasAppointmentsObj[spec]|| 0);
+
         // console.log(doctorHaveAppointmentsArray)
         // console.log(doctorHaveAppointmentsCount)
         // console.log(doctorHaveAppointmentsObj)
@@ -199,6 +210,26 @@ if (window.location.href.includes("dashboard")) {
                 }]
             }
         })
+
+        //appointmentSpecializationChart
+        backgroundColors = specializationHasAppointmentsArray.map(() => generateRandomColor());
+
+        let ctx7= document.getElementById('appointmentSpecializationChart').getContext('2d');
+        new Chart(ctx7, {
+            type:'line',
+            data:{
+                labels:specializationHasAppointmentsArray,
+                datasets:[{
+                    label:'Number of appointments for each specialization',
+                    data:specializationHasAppointmentsCount,
+                    backgroundColor:backgroundColors
+                }]
+            }
+        }
+
+        )
+
+
     });
 }
 
