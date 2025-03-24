@@ -87,19 +87,32 @@ if (window.location.href.includes("dashboard")) {
         let specializationHasAppointments =new Set();
         let specializationHasAppointmentsObj ={};
 
+        let dateAppointmentObj={};
+        let allDays = ["Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat"];
+
         appointments.forEach(appointment=>{
         let sta= appointment.status;
         let doc = appointment.doctorName;
         let spec = appointment.specialization;
 
+        let date = new Date(appointment.date);
+        let todayDate = new Date();
+        let sevenDaysAgo = new Date();
+        sevenDaysAgo.setDate(todayDate.getDate() - 7);
+        
             doctorHaveAppointments.add(doc);
             labelsStatusAppointments.add(sta);
             specializationHasAppointments.add(spec);
+            if (date.getTime() >= sevenDaysAgo.getTime() && date.getTime() <= todayDate.getTime()) {
+                let dayName=(date.toLocaleString('en-US',{weekday:'short'}))       
+                dateAppointmentObj[dayName]=(dateAppointmentObj[dayName]||0) +1
+            }
 
             statusAppointment[sta]= (statusAppointment[sta] || 0) + 1;
             doctorHaveAppointmentsObj[doc] =(doctorHaveAppointmentsObj[doc] || 0) + 1;
             specializationHasAppointmentsObj[spec]= (specializationHasAppointmentsObj[spec] || 0) +1;
         })
+        console.log(dateAppointmentObj)
 
         let labelsStatusAppointmentsArray = [...labelsStatusAppointments];
         let statusAppointmentCount = labelsStatusAppointmentsArray.map(sta => statusAppointment[sta] || 0);
@@ -109,10 +122,13 @@ if (window.location.href.includes("dashboard")) {
 
         let specializationHasAppointmentsArray =[...specializationHasAppointments];
         let specializationHasAppointmentsCount = specializationHasAppointmentsArray.map(spec => specializationHasAppointmentsObj[spec]|| 0);
+        
+        let dateAppointmentLabels =allDays;
+        let dateAppointmentCount =dateAppointmentLabels.map(day => dateAppointmentObj[day] || 0);
 
-        // console.log(doctorHaveAppointmentsArray)
-        // console.log(doctorHaveAppointmentsCount)
-        // console.log(doctorHaveAppointmentsObj)
+       
+        //  console.log(dateAppointmentLabels)
+        // console.log(dateAppointmentCount)
 
 
 
@@ -213,7 +229,6 @@ if (window.location.href.includes("dashboard")) {
 
         //appointmentSpecializationChart
         backgroundColors = specializationHasAppointmentsArray.map(() => generateRandomColor());
-
         let ctx7= document.getElementById('appointmentSpecializationChart').getContext('2d');
         new Chart(ctx7, {
             type:'line',
@@ -225,10 +240,22 @@ if (window.location.href.includes("dashboard")) {
                     backgroundColor:backgroundColors
                 }]
             }
-        }
-
-        )
-
+        })
+        
+        backgroundColors = dateAppointmentLabels.map(() => generateRandomColor());
+        let ctx8 = document.getElementById('appointmentDateChart');
+        new Chart(ctx8, {
+            type:'line',
+            data:{
+                labels:dateAppointmentLabels,
+                datasets:[{
+                    label:'Number of appointment in each day in last week',
+                    data:dateAppointmentCount,
+                    backgroundColor:backgroundColors,
+                    dateAppointmentCount
+                }]
+            }
+        })
 
     });
 }
@@ -733,8 +760,8 @@ $(document).ready(function () {
                 let time = $('#timeAppointment').val();
                 let date = $('#dateAppointment').val();
                 let status =  $(`input[name="statusAppointment"]:checked`).next('label').text()
-                let formattedDate = date.split("-").reverse().join("/"); 
-                item={'id':id , 'patientName':patientName, 'doctorName':doctorName, 'specialization':specialization, 'time':time, 'date':formattedDate, 'status':status  }
+               // let formattedDate = date.split("-").reverse().join("/"); 
+                item={'id':id , 'patientName':patientName, 'doctorName':doctorName, 'specialization':specialization, 'time':time, 'date':date, 'status':status  }
             break;
         };
     let data =JSON.parse(localStorage.getItem(storageKey));
