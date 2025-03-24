@@ -29,6 +29,8 @@ if (window.location.href.includes("dashboard")) {
 
         let patients = JSON.parse(localStorage.getItem('Patients')) || []; 
         let appointments = JSON.parse(localStorage.getItem('Appointments')) || [];
+        let doctors = JSON.parse(localStorage.getItem('Doctors')) || [];
+
         //console.log("Patients Data:", patients);
     
         let specializations = [];
@@ -129,6 +131,17 @@ if (window.location.href.includes("dashboard")) {
        
         //  console.log(dateAppointmentLabels)
         // console.log(dateAppointmentCount)
+
+        let allSpecializationsLabels = JSON.parse(localStorage.getItem('Departments'));
+        let doctorsoOfSpecializationObj ={};
+        doctors.forEach(
+            doctor=>{
+                let spec = doctor.specialization;
+                doctorsoOfSpecializationObj[spec]= (doctorsoOfSpecializationObj[spec] || 0) +1
+            }
+        )
+        console.log(doctorsoOfSpecializationObj)
+        let doctorsoOfSpecializationCount =allSpecializationsLabels.map(spec =>doctorsoOfSpecializationObj[spec] || 0 )
 
 
 
@@ -251,6 +264,22 @@ if (window.location.href.includes("dashboard")) {
                 datasets:[{
                     label:'Number of appointment in each day in last week',
                     data:dateAppointmentCount,
+                    backgroundColor:backgroundColors,
+                    dateAppointmentCount
+                }]
+            }
+        })
+
+        // doctor charts
+        backgroundColors = allSpecializationsLabels.map(() => generateRandomColor());
+        let ctx9 = document.getElementById('doctorsAtSpecializationChart');
+        new Chart(ctx9, {
+            type:'line',
+            data:{
+                labels:allSpecializationsLabels,
+                datasets:[{
+                    label:'Number of doctors in each specialization ',
+                    data:doctorsoOfSpecializationCount,
                     backgroundColor:backgroundColors,
                     dateAppointmentCount
                 }]
