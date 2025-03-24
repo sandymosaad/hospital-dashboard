@@ -28,6 +28,7 @@ if (window.location.href.includes("dashboard")) {
         }
 
         let patients = JSON.parse(localStorage.getItem('Patients')) || []; 
+        let appointments = JSON.parse(localStorage.getItem('Appointments')) || [];
         //console.log("Patients Data:", patients);
     
         let specializations = [];
@@ -71,11 +72,33 @@ if (window.location.href.includes("dashboard")) {
             let sta = patient.status;
             statusCount[sta] = (statusCount[sta] || 0) + 1;
         });
+
+
+        // Appointment Charts
+        let labelsStatusAppointments= new Set();
+        let statusAppointment ={}
+
+        appointments.forEach(appointment=>{
+        let sta= appointment.status;
+            labelsStatusAppointments.add(sta);
+            statusAppointment[sta]= (statusAppointment[sta] || 0) + 1;
+        })
+
+        let labelsStatusAppointmentsArray = [...labelsStatusAppointments]
+
+        let statusAppointmentCount = labelsStatusAppointmentsArray.map(sta => statusAppointment[sta] || 0)
+        console.log(labelsStatusAppointments)
+        console.log(statusAppointment)
+        console.log(statusAppointmentCount)
+
+
+
     
         let labelsArray = [...labels]; 
         let countsArray = labelsArray.map(spec => patientCounts[spec]); 
         let ageCountArray = ageLabels.map(label => countAgeAvraige[label] || 0);
         let statusCountArray = statusLabel.map(stat => statusCount[stat] || 0);
+
 
         function generateRandomColor() {
             return `#${Math.floor(Math.random() * 16777215).toString(16)}`;
@@ -127,7 +150,7 @@ if (window.location.href.includes("dashboard")) {
             
         })
 
-        // status chart
+        // status patients chart
         let ctx4 = document.getElementById('statusChart').getContext('2d');
         new Chart (ctx4,{
             type:'line',
@@ -142,6 +165,22 @@ if (window.location.href.includes("dashboard")) {
             }
         })
 
+        // status appointment chart
+        backgroundColors = labelsArray.map(() => generateRandomColor());
+        let ctx5 = document.getElementById('appointmentStatusChart').getContext('2d');
+        new Chart (
+            ctx5, {
+                type:'bar',
+                data:{
+                    labels:labelsStatusAppointmentsArray,
+                    datasets:[{
+                        label:'Ratio of Status of Appointments',
+                        data: statusAppointmentCount,
+                        backgroundColor:backgroundColors
+                    }]
+                }
+            }
+        )
     
     });
 }
