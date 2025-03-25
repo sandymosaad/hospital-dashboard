@@ -150,7 +150,6 @@ if (window.location.href.includes("dashboard")) {
         }
     
         let backgroundColors = labelsArray.map(() => generateRandomColor());
-    
         let ctx1 = document.getElementById("patientsChart").getContext("2d");
         new Chart(ctx1, {
             type: "bar",
@@ -161,6 +160,10 @@ if (window.location.href.includes("dashboard")) {
                     data: countsArray, 
                     backgroundColor: backgroundColors, 
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
         });
 
@@ -178,6 +181,10 @@ if (window.location.href.includes("dashboard")) {
                     data: genderCounts,
                     backgroundColor: ["#3498db", "#e74c3c"],
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
         });
         // age chart
@@ -191,6 +198,10 @@ if (window.location.href.includes("dashboard")) {
                     data:ageCountArray,
                     backgroundColor: ["#3498db"]
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
             
         })
@@ -207,6 +218,10 @@ if (window.location.href.includes("dashboard")) {
                     backgroundColor: ["#3498db"]
 
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
         })
 
@@ -222,6 +237,10 @@ if (window.location.href.includes("dashboard")) {
                         data: statusAppointmentCount,
                         backgroundColor:backgroundColors
                     }]
+                },
+                options: {
+                    responsive: true,
+                    maintainAspectRatio: false,
                 }
             })
 
@@ -237,6 +256,10 @@ if (window.location.href.includes("dashboard")) {
                     data:doctorHaveAppointmentsCount,
                     backgroundColor:backgroundColors
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
         })
 
@@ -252,6 +275,10 @@ if (window.location.href.includes("dashboard")) {
                     data:specializationHasAppointmentsCount,
                     backgroundColor:backgroundColors
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
         })
         
@@ -267,6 +294,10 @@ if (window.location.href.includes("dashboard")) {
                     backgroundColor:backgroundColors,
                     dateAppointmentCount
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
         })
 
@@ -283,11 +314,18 @@ if (window.location.href.includes("dashboard")) {
                     backgroundColor:backgroundColors,
                     dateAppointmentCount
                 }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
             }
         })
 
     });
 }
+
+// -in add doctor want to make spacializtion dropdown 
+// - in add appoitment make the spacilaiztion depand in doctor name 
 
 
 

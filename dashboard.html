@@ -8,147 +8,116 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/css/bootstrap.min.css">
     <link rel="stylesheet" href="https://cdn.datatables.net/1.13.6/css/jquery.dataTables.min.css">
     <link rel="stylesheet" href="css/styles.css">
-
-
     <title>hospital-dashboard</title>
 </head>
 <body>
     <nav >
-        <div class="navbarContainer"> 
-            <div>
-                <a class="navbarBrand" href="#"><img src="assets/images/logo2.png" alt="logo"></a>
-            </div>
-            <div class="hospitalName">
-                <p>El Salam Hospital</p>
-            </div>
-            <div class="userName">
-                <div>
-                    <p>7mash</p>
+        <div class="navbarContainer">
+            <div class="navheader">
+                <a class="navbarBrand" href="#">
+                    <img src="assets/images/logo2.png" alt="logo">
+                </a>
+                <div class="hospitalName">El Salam Hospital</div>
+                <div class="userSection">
+                    <p class="userName">7mash</p>
                     <img src="assets/images/user image.jpg" alt="user">
-                </div>
-                <div>
-                    <button class="logoutBtn btn">Log Out</button>
+                    <button class="logoutBtn">Log Out</button>
                 </div>
             </div>
+            <header>
+                <ul>
+                    <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
+                    <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
+                    <li><a href="doctors.html"><i class="fas fa-user-md"></i> Doctors</a></li>
+                    <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
+                </ul>
+            </header>
         </div>
     </nav>
-<section class="mainContainer" >
-                <!-- sidebar -->
-    <aside class="sidebar" >
-        <ul>
-            <li><a href="dashboard.html"><i class="fas fa-tachometer-alt"></i> Dashboard</a></li>
-            <li><a href="patients.html"><i class="fas fa-user-injured"></i> Patients</a></li>
-            <li><a href="doctors.html"><i class="fas fa-user-md"></i> Doctors</a></li>
-            <li><a href="appointments.html"><i class="fas fa-calendar-check"></i> Appointments</a></li>
-        </ul>
-    </aside>
-    <main class="mainContent">
-        <h2>Welcome to Hospital Dashboard</h2>
-                        <!-- cards -->
-        <section class="cards">
-            <div class="card">
-                
-                <div class="card-body">
-                    <p id="totalPatients" class="card-text animatingNumberCounters"></p>
-                    <h5 class="card-title"><i class="fas fa-user-injured"></i>Total Patients</h5>
-                </div>   
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <p id="totalDoctors" class="card-text animatingNumberCounters"></p>
-                    <h5 class="card-title"><i class="fas fa-user-md"></i>Total Doctors</h5>
-                </div>   
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <p id="totalAppointments" class="card-text animatingNumberCounters"></p>
-                    <h5 class="card-title"><i class="fas fa-calendar-check"></i>Total Appointments</h5>
-                </div>   
-            </div>
-            <div class="card">
-                <div class="card-body">
-                    <p id="totalDepartments" class="card-text animatingNumberCounters"></p>
-                    <h5 class="card-title"><i class="fas fa-hospital"></i>Total Departments</h5>
-                </div>   
-            </div>
-        </section>
-        <section class="charts">
-            <!-- <div class="row">
-                <div class="col-md-6">
-                    <h3 class="mt-2">Patents Statistics</h3>
-                    <div class="col-md-3">
-                        <canvas id="patientsChart"></canvas>
-                    </div>
-                    <div class="col-md-3">
-                        <canvas id="genderChart"></canvas>
-                    </div>
-                    <div class="col-md-3">
-                        <canvas id="ageChart"></canvas>
-                    </div>
-                    <div class="col-md-3">
-                        <canvas id="statusChart"></canvas>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="mt-2">Appointments Statistics</h3>
-                  
-                </div>
-            </div> -->
-            <div class="row">
-                <div class="col-md-6">
-                    <h3 class="mt-2">Patients Statistics</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <canvas id="patientsChart"></canvas>
-                        </div>
-                        <div class="col-md-6">
-                            <canvas id="ageChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="row mt-3">
-                        <div class="col-md-6">
-                            <canvas id="genderChart"></canvas>
-                        </div>
-                        <div class="col-md-6">
-                            <canvas id="statusChart"></canvas>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-6">
-                    <h3 class="mt-2">Appointments Statistics</h3>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <canvas id="appointmentStatusChart"></canvas>
-                        </div>
-                        <div class="col-md-6">
-                            <canvas id="appointmentDoctorsChart"></canvas>
-                        </div>
-                    </div>
-                    <div class="row">
-                        <div class="col-md-6">
-                            <canvas id="appointmentSpecializationChart"></canvas>
-                        </div>
-                        <div class="col-md-6">
-                            <canvas id="appointmentDateChart"></canvas>
-                        </div>
-                    </div>
-                </div><div class="col-md-6">
-                    <h3 class="mt-2">Doctors Statistics</h3>
-                    <div class="row">
-                        <div >
-                            <canvas id="doctorsAtSpecializationChart"></canvas>
-                        </div>
+    <section class="mainContainer" >
+        <main class="mainContent">
+            <h2>Welcome to El Salam Hospital Dashboard</h2>
+                            <!-- cards -->
+            <section class="cards">
+                <div class="card">
                     
-                    </div>
-                
+                    <div class="card-body">
+                        <p id="totalPatients" class="card-text animatingNumberCounters"></p>
+                        <h5 class="card-title"><i class="fas fa-user-injured"></i>Total Patients</h5>
+                    </div>   
                 </div>
-
-
-            </div>
-            
-        </section>
-    </main>
-</section>
+                <div class="card">
+                    <div class="card-body">
+                        <p id="totalDoctors" class="card-text animatingNumberCounters"></p>
+                        <h5 class="card-title"><i class="fas fa-user-md"></i>Total Doctors</h5>
+                    </div>   
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <p id="totalAppointments" class="card-text animatingNumberCounters"></p>
+                        <h5 class="card-title"><i class="fas fa-calendar-check"></i>Total Appointments</h5>
+                    </div>   
+                </div>
+                <div class="card">
+                    <div class="card-body">
+                        <p id="totalDepartments" class="card-text animatingNumberCounters"></p>
+                        <h5 class="card-title"><i class="fas fa-hospital"></i>Total Departments</h5>
+                    </div>   
+                </div>
+            </section>
+            <section class="charts">
+                <div class="row">
+                    <div class="col-md-5">
+                        <h3 >Patients Statistics</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="patientsChart"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="ageChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="statusChart"></canvas>
+                            </div>
+                            <div class="col-md-6 genderChart">
+                                <canvas id="genderChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-5">
+                        <h3 >Appointments Statistics</h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="appointmentStatusChart"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="appointmentDoctorsChart"></canvas>
+                            </div>
+                        </div>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <canvas id="appointmentSpecializationChart"></canvas>
+                            </div>
+                            <div class="col-md-6">
+                                <canvas id="appointmentDateChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <h3 >Doctors Statistics</h3>
+                        <div class="row">
+                            <div >
+                                <canvas id="doctorsAtSpecializationChart"></canvas>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                
+            </section>
+        </main>
+    </section>
 
 <script src="js/jquery-3.7.1.js"></script> 
 <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>  
@@ -159,3 +128,4 @@
 
 </body>
 </html>
+
