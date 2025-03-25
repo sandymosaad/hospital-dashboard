@@ -328,10 +328,6 @@ if (window.location.href.includes("dashboard")) {
 // - in add appoitment make the spacilaiztion depand in doctor name 
 
 
-
-
-
-
 $(document).ready(function () {
     let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery','Hematology'];
     localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
@@ -343,15 +339,14 @@ $(document).ready(function () {
         "autoWidth": false,
         "columnDefs": [
             { "width": "10px", "targets": 0 },
-            { "width": "40px", "targets": 1 },
-            { "width": "17px", "targets": 2 },
-            { "width": "40px", "targets": 3 },
-            { "width": "60px", "targets": 4 },
-            { "width": "50px", "targets": 5 },
-            { "width": "50px", "targets": 6 },
-            { "width": "30px", "targets": 7},
-            { "width": "60px", "targets": 8 },
-            { "width": "60px", "targets": 9}
+            { "width": "25px", "targets": 1 },
+            { "width": "35px", "targets": 2 },
+            { "width": "35px", "targets": 3 },
+            { "width": "50px", "targets": 4 },
+            { "width": "40px", "targets": 5 },
+            { "width": "40px", "targets": 6 },
+            { "width": "40px", "targets": 7},
+            { "width": "50px", "targets": 8 },
         ]
     });
     let doctorsTable = $('#doctorsTable').DataTable({
@@ -405,7 +400,8 @@ $(document).ready(function () {
         }
         table.draw();
     }
-    displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease','specializationPatient']);
+    displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender',  'phone', 'status', 'disease','specializationPatient']);
+
     displayData(doctorsTable, 'Doctors', ['id', 'name', 'specialization', 'email', 'phone', 'status']);
     displayData(appointmentsTable, 'Appointments', ['id', 'doctorName', 'patientName', 'specialization', 'date', 'time', 'status']);
 
@@ -583,20 +579,18 @@ $(document).ready(function () {
         case "patient":
             hasError = validatePatient(data);
             if (!hasError) {
-                hideErrors(' #nameError, #phoneError, #diseaseError, #addressError');
+                hideErrors(' #nameError, #phoneError, #diseaseError');
                     let patient = {
                         name: data.name,
                         age: data.age,
                         gender: data.gender,
-                        address: data.address,
                         phone: data.phone,
                         status: data.status,
                         disease: data.disease,
                         specializationPatient: data.specializationPatient
-
                     };
                     console.log(data)
-                addNewItem('Patients', patient, patientsTable, ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease','specializationPatient']);
+                    addNewItem('Patients', patient, patientsTable, ['id', 'name', 'age', 'gender', 'phone', 'status', 'disease','specializationPatient']);
             }            
             break;
         }
@@ -673,7 +667,6 @@ $(document).ready(function () {
         let patterns = {
             phone: /^01[0125][0-9]{8}$/,
             name: /^[a-zA-Z ]{3,}$/,
-            address: /^[A-Za-z0-9\s\-_\/]{3,}$/,
             disease: /^[A-Za-z\u0600-\u06FF0-9\s\-_\/]{3,}$/
         };
     
@@ -683,10 +676,6 @@ $(document).ready(function () {
         }
         if (!patterns.name.test(data.name)) {
             $('#nameError').text('Enter a valid name!').show();
-            hasError = true;
-        }
-        if (!patterns.address.test(data.address)) {
-            $('#addressError').text('Enter a valid address!').show();
             hasError = true;
         }
         if (!patterns.disease.test(data.disease)) {
@@ -797,12 +786,9 @@ $(document).ready(function () {
                 $('#id').val(data.id);
                 $('#name').val(data.name);
                 $('#age').val(data.age);
-                $('#address').val(data.address);
                 $('#phone').val(data.phone);
                 $('#disease').val(data.disease);
                 $('.dropdown-toggle-specializationPatient').text(data.specializationPatient);
-
-
                 $(`input[name="gender"][value= "${data.gender}"]`).prop("checked", true);
                 $(`input[name="status"][value= "${data.status}"]`).prop('checked', true)
                 showItemsInDropDownListSpecialization();    
@@ -843,14 +829,12 @@ $(document).ready(function () {
             id = parseInt($('#id').val());
             let nameP = $('#name').val();
             let age = parseInt($('#age').val());
-            let address = $('#address').val();
             let phoneP = $('#phone').val();
             let disease = $('#disease').val();
             let specializationPatient = $('.dropdown-toggle-specializationPatient').text();
             let gender = $('input[name="gender"]:checked').next('label').text();
             let statusP = $('input[name="status"]:checked').next('label').text();
-            
-            item ={'id': id, "name": nameP, "age": age, "gender": gender, "address": address, "phone": phoneP, "status": statusP, "disease": disease,"specializationPatient":specializationPatient }
+            item ={'id': id, "name": nameP, "age": age, "gender": gender, "phone": phoneP, "status": statusP, "disease": disease,"specializationPatient":specializationPatient }
             
             break;
             case "Doctors" :
@@ -885,7 +869,8 @@ $(document).ready(function () {
 
     showNotification(`${lowerCaseTypeN} updated succsessfully!`);
         if(storageKey==='Patients'){
-            displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'address', 'phone', 'status', 'disease','specializationPatient']);
+            displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender', 'phone', 'status', 'disease','specializationPatient']);
+
         }else if(storageKey==='Doctors'){
             displayData(doctorsTable, 'Doctors', ['id', 'name', 'specialization', 'email', 'phone', 'status']);
         }
@@ -900,71 +885,38 @@ $(document).ready(function () {
 
     //-------------------------------------------------------------------------------------
     // dropdowns filter
-    $('#statusDropdown .dropdown-item').on('click', function() {
-        let table = $('#patientsTable').DataTable();
-        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-            let status = (data[6]); 
-            let statusChoice = $('#statusDropdown').attr('data-selected'); 
+    function applyFilter(filterId, columnIndex) {
+        $('#' + filterId + ' .dropdown-item').on('click', function () {
+            let selectedValue = $(this).text().trim();
+            $('#' + filterId).attr('data-selected', selectedValue);
+            
+            $.fn.dataTable.ext.search = $.fn.dataTable.ext.search.filter(function (fn) {
+                return fn.columnIndex !== columnIndex;
+            });
     
-            if (!statusChoice || statusChoice === "ALL") {
-                return true;
-            } else if (statusChoice === "Stable") {
-                return status === "Stable";
-            } else if (statusChoice === "Recoverd") {
-                return status === "Recoverd";
-            } else if (statusChoice === "Under Treatment") {
-                return status === "Under Treatment";
-            } else if (statusChoice === "Chronic") {
-                return status === "Chronic";
-            }
-            return false;
-        });
-        let statusChoice = $(this).text().trim();
-        $('#statusDropdown').attr('data-selected',statusChoice);
-        table.draw(); 
-    });
-
-    $('#genderDropdown .dropdown-item').on('click', function () {
-        let table = $('#patientsTable').DataTable();
-        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-            let gender = (data[3]); 
-            let genderChoice = $('#genderDropdown').attr('data-selected'); 
+            function customFilter(settings, data, dataIndex) {
+                let cellValue = data[columnIndex].trim(); 
     
-            if (!genderChoice || genderChoice === "ALL") {
-                return true;
-            } else if (genderChoice === "Male") {
-                return gender === "Male";
-            } else if (genderChoice === "Female") {
-                return gender === "Female";
+                if (selectedValue === "ALL" || selectedValue === "All") return true;
+                
+                if (filterId === "ageDropdown") {
+                    let age = parseInt(cellValue);
+                    if (selectedValue === "from 1 to 30") return age >= 1 && age <= 30;
+                    if (selectedValue === "from 30 to 50") return age > 30 && age <= 50;
+                    if (selectedValue === "max to 50") return age > 50;
+                } else {
+                    return cellValue === selectedValue;
+                }
             }
-            return false;
+            customFilter.columnIndex = columnIndex;
+            $.fn.dataTable.ext.search.push(customFilter);
+            
+            patientsTable.draw(); 
         });
-        let genderChoice = $(this).text().trim();
-        $('#genderDropdown').attr('data-selected',genderChoice);
-        table.draw(); 
-    });
-
-    $('#ageDropdown .dropdown-item').on('click', function () {
-        let table = $('#patientsTable').DataTable();
-        $.fn.dataTable.ext.search.push(function (settings, data, dataIndex) {
-            let age = parseInt(data[2]); 
-            let ageRange = $('#ageDropdown').attr('data-selected'); 
-    
-            if (!ageRange || ageRange === "All") {
-                return true; 
-            } else if (ageRange === "from 1 to 30") {
-                return age >= 1 && age <= 30;
-            } else if (ageRange === "from 30 to 50") {
-                return age > 30 && age <= 50;
-            } else if (ageRange === "max to 50") {
-                return age > 50;
-            }
-            return false;
-        });
-        let ageRange = $(this).text().trim();
-        $('#ageDropdown').attr('data-selected', ageRange); 
-        table.draw(); 
-    });
+    }
+    applyFilter("genderDropdown", 3); 
+    applyFilter("ageDropdown", 2);
+    applyFilter("statusDropdown", 5); 
 
 
     //------------------------------------------------------------------------appointments------------------------------------------------
