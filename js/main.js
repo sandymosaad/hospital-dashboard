@@ -337,9 +337,54 @@ $(document).ready(function () {
     localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
 
     // display data
-    let patientsTable = $('#patientsTable').DataTable();
-    let doctorsTable = $('#doctorsTable').DataTable();
-    let appointmentsTable=$('#appointmentsTable').DataTable()
+    let patientsTable = $('#patientsTable').DataTable({
+        "scrollX": false, 
+        "responsive": true,
+        "autoWidth": false,
+        "columnDefs": [
+            { "width": "10px", "targets": 0 },
+            { "width": "40px", "targets": 1 },
+            { "width": "17px", "targets": 2 },
+            { "width": "40px", "targets": 3 },
+            { "width": "60px", "targets": 4 },
+            { "width": "50px", "targets": 5 },
+            { "width": "50px", "targets": 6 },
+            { "width": "30px", "targets": 7},
+            { "width": "60px", "targets": 8 },
+            { "width": "60px", "targets": 9}
+        ]
+    });
+    let doctorsTable = $('#doctorsTable').DataTable({
+        "scrollX": false, 
+        "responsive": true,
+        "autoWidth": false,
+        "columnDefs": [
+            { "width": "10px", "targets": 0 },
+            { "width": "50px", "targets": 1 },
+            { "width": "50px", "targets": 2 },
+            { "width": "60px", "targets": 3 },
+            { "width": "60px", "targets": 4 },
+            { "width": "45px", "targets": 5 },
+            { "width": "45px", "targets": 6 },
+        ]
+    });
+    let appointmentsTable = $('#appointmentsTable').DataTable({
+        "scrollX": false, 
+        "responsive": true,
+        "autoWidth": false,
+        "columnDefs": [
+            { "width": "10px", "targets": 0 },
+            { "width": "50px", "targets": 1 },
+            { "width": "50px", "targets": 2 },
+            { "width": "60px", "targets": 3 },
+            { "width": "60px", "targets": 4 },
+            { "width": "30px", "targets": 5 },
+            { "width": "60px", "targets": 6 },
+            { "width": "60px", "targets": 7}
+        ]
+    });
+    
+    
 
     function displayData(table, storageKey, columns) {
         let data = JSON.parse(localStorage.getItem(storageKey));

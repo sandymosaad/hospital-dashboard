@@ -124,13 +124,16 @@ header ul li a:hover {
 .mainContent {
     background-color: #f4f4f4;
     flex: 1;
-    padding: 20px;
 }
-h3 , h2 {
+h3 , h2, h1 {
     text-align: center;
     margin: 10px;
     font-weight: bold;
 }
+h1{
+    margin: 5px;
+}
+
 /*cards*/
 
 .cards {
@@ -163,15 +166,80 @@ h3 , h2 {
     font: 800 40px system-ui;
   }
 
+
 /* tables*/
+.btns {
+    display: flex;
+    flex-wrap: wrap; 
+    justify-content: center; 
+    gap: 3px;
+}
+.btns button {
+    width: 200px;
+    max-width: 100%; 
+}
+.addItem:hover{
+    background-color:#032861;
+}
+#clearAllData:hover{
+    background-color:#b91206;
+}
+.table-responsive {
+    width: 100%;
+    max-width: 100%;
+    margin: 0;
+    padding: 0;
+    overflow-x: auto;
+    display: block;
+}
+
+#appointmentsTable, #patientsTable, #doctorsTable {
+    width: 100%;
+    table-layout: fixed; 
+}
+
+#appointmentsTable th,
+#appointmentsTable td,
+#patientsTable th,
+#patientsTable td ,
+#doctorsTable th,
+#doctorsTable td
+{
+    word-wrap: break-word;
+    text-align: center;
+    font-size: 14px;
+}
+.dropdown .btn {
+    padding: 5px 10px;
+    font-size: 12px;
+}
+.deleteItem , .editItem{
+    padding: 1;
+}
+@media (max-width: 768px) {
+    #appointmentsTable th,
+    #appointmentsTable td, 
+    #patientsTable th,
+    #patientsTable td,
+    #doctorsTable th,
+    #doctorsTable td 
+    {
+        font-size: 12px; 
+        padding: 3px;
+    }
+
+    .table-responsive {
+        overflow-x: auto;
+    }
+}
+
+
 /* .table-responsive {
     overflow-x: auto;
     -webkit-overflow-scrolling: touch;
-}
-.addPatientBtn{
-    background-color: #267ec2;
-}
+} */
 
+/* 
 .tables table {
     width: 100%;
     min-width: 800px; 

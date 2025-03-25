@@ -36,13 +36,15 @@
     </nav>
     <section class="mainContainer" >
         <main class="mainContent">
-            <h2>Appointments</h2>
-            <button type="button" id="addAppointmentBtn" class="btn addAppointmentBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#appointmentsModal">
-                Add New Appointment
-            </button>
-            <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" data-type="Appointments" id="clearAllData">
-                Clear All Data
-            </button>
+            <h1>Appointments</h1>
+            <div class="btns ">
+                <button type="button" id="addAppointmentBtn" class="btn addAppointmentBtn btn-primary addItem" data-bs-toggle="modal" data-bs-target="#appointmentsModal">
+                    Add New Appointment
+                </button>
+                <button type="button" class="btn btn-danger" data-type="Appointments" id="clearAllData">
+                    Clear All Data
+                </button>
+            </div>
 
             <!-- Modal -->
             <div class="modal fade" id="appointmentsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
@@ -123,63 +125,56 @@
             </div>
 
 
-        <div class="table-responsive">
-            <table id="appointmentsTable" class="table table-bordered table-striped text-center display">
-                <thead class="table-dark">
-                <tr>
-                    <th>Id</th>
-                    <th>Doctor's Name 
-                        <span class="dropdown m-3" id="doctorsNameDropdown" data-selected="All">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuDoctorsName" data-bs-toggle="dropdown" aria-expanded="false">
-                                Filter
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuDoctorsName">
-                                <!-- dropdown-items-->
-                            </ul>
-                        </span>
-                    </th>
-                    <th>Patient's Name </th>
-                    <th>specialization
-                        <span class="dropdown m-3" id="specializationDropdown" data-selected="All">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuSpecialization" data-bs-toggle="dropdown" aria-expanded="false">
-                                Filter
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuSpecialization">
-                                <!-- dropdown-items-->
-                            </ul>
-                        </span>
-                    </th>
-                    <th>Date
-                        <span class="dropdown m-3" id="dateAppiontmentDropdown" >
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuDate" data-bs-toggle="dropdown" aria-expanded="false">
-                                Filter
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuDate">
-                                <!-- dropdown-items-->
-                                <li> <label>From</label><input type="date" class="dropdown-item" id="startDate"></li>
-                                <li> <label>To</label> <input type="date" class="dropdown-item" id="endDate"></li>
-                                <button class="btn btn-secondary" id="filterDateBtn">filter</button>
-                            </ul>
-                        </span>
-                    </th>
-                    <th>Time</th>
-                    <th>Status
-                        <span class="dropdown m-3" id="statusAppiontmentDropdown" data-selected="All">
-                            <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuStatus" data-bs-toggle="dropdown" aria-expanded="false">
-                                Filter
-                            </button>
-                            <ul class="dropdown-menu" aria-labelledby="dropdownMenuStatus">
-                                <!-- dropdown-items-->
-                            </ul>
-                        </span>
-                    </th>
-                    <th>Actions</th>
-                </tr>
-            </thead>
-            <tbody>
-            </tbody>  
-            </table>
-        </div>  
+            <div class="table-responsive ">
+                <table id="appointmentsTable" class="table table-striped table-bordered ">
+                    <thead class="table-dark">
+                        <tr>
+                            <th>Id</th>
+                            <th>Doctor's Name 
+                                <span class="dropdown" id="doctorsNameDropdown" data-selected="All">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuDoctorsName" data-bs-toggle="dropdown">
+                                        Filter
+                                    </button>
+                                    <ul class="dropdown-menu"></ul>
+                                </span>
+                            </th>
+                            <th>Patient's Name</th>
+                            <th>Specialization
+                                <span class="dropdown" id="specializationDropdown" data-selected="All">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuSpecialization" data-bs-toggle="dropdown">
+                                        Filter
+                                    </button>
+                                    <ul class="dropdown-menu"></ul>
+                                </span>
+                            </th>
+                            <th>Date
+                                <span class="dropdown" id="dateAppiontmentDropdown">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuDate" data-bs-toggle="dropdown">
+                                        Filter
+                                    </button>
+                                    <ul class="dropdown-menu">
+                                        <li> <label>From</label> <input type="date" class="dropdown-item" id="startDate"></li>
+                                        <li> <label>To</label> <input type="date" class="dropdown-item" id="endDate"></li>
+                                        <button class="btn btn-secondary" id="filterDateBtn">Filter</button>
+                                    </ul>
+                                </span>
+                            </th>
+                            <th>Time</th>
+                            <th>Status
+                                <span class="dropdown" id="statusAppiontmentDropdown" data-selected="All">
+                                    <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuStatus" data-bs-toggle="dropdown">
+                                        Filter
+                                    </button>
+                                    <ul class="dropdown-menu"></ul>
+                                </span>
+                            </th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody></tbody>  
+                </table>
+            </div>
+             
 
         </main>
     </section>

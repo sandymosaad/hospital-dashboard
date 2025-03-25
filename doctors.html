@@ -36,15 +36,16 @@
     </nav>
     <section class="mainContainer" >
         <main class="mainContent">
-            <h2>Doctors</h2>
+            <h1>Doctors</h1>
                 <!-- Add Doctor Button -->
-                <button type="button" id="addDoctorBtn" class="btn addDoctorBtn mb-3 d-block w-100 d-md-inline btn-primary" data-bs-toggle="modal" data-bs-target="#doctorsModal">
-                    Add Doctor
-                </button>
-                <button type="button" class="btn  mb-3 d-block w-100 d-md-inline btn-danger" id="clearAllData"  data-type="Doctors">
-                    Clear All Data
-                </button>
-
+                <div class="btns">
+                    <button type="button" id="addDoctorBtn" class="btn addDoctorBtn addItem btn-primary" data-bs-toggle="modal" data-bs-target="#doctorsModal">
+                        Add Doctor
+                    </button>
+                    <button type="button" class="btn btn-danger" id="clearAllData"  data-type="Doctors">
+                        Clear All Data
+                    </button>
+                </div>
                 <!-- Modal -->
                 <div class="modal fade" id="doctorsModal" tabindex="-1" aria-labelledby="exampleModalLabel" aria-hidden="true">
                     <div class="modal-dialog modal-dialog-centered modal-lg">
@@ -111,7 +112,7 @@
 
 
             <div class="table-responsive">
-                <table id="doctorsTable" class="table table-bordered table-striped text-center display">
+                <table id="doctorsTable" class="table table-bordered table-striped">
                     <thead class="table-dark">
                     <tr>
                         <th>Id</th>
