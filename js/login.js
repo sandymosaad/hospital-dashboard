@@ -30,9 +30,14 @@ $(document).ready(function(){
     })
 
 
-    // $('#togglePassword').on('click', function(){
-    //     $('#password').text()
-    // })
+    $('#togglePassword').on('click', function(){
+        let input =$('#password');
+        if(input.attr('type')=== 'password'){
+            input.attr('type', 'text')
+        }else{
+            input.attr('type', 'password')
+        }
+    })
 
 
 
