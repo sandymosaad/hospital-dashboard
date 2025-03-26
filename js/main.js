@@ -336,6 +336,7 @@ if (window.location.href.includes("dashboard")) {
 
 
 $(document).ready(function () {
+    // login & logout
     let user = JSON.parse(sessionStorage.getItem("User"));
 
     if (user) {
@@ -343,6 +344,12 @@ $(document).ready(function () {
     } else {
         window.location.href = "login.html";
     }
+
+    $('.logoutBtn').on('click', function(){
+        sessionStorage.removeItem('User');
+        window.location.href = "login.html";
+    })
+
     let hospitalDepartments=["Emergency", 'Cardiology', 'Dental', 'Physical Therapy',' General Surgery','Hematology'];
     localStorage.setItem('Departments',JSON.stringify(hospitalDepartments));
 
@@ -415,7 +422,6 @@ $(document).ready(function () {
         table.draw();
     }
     displayData(patientsTable, 'Patients', ['id', 'name', 'age', 'gender',  'phone', 'status', 'disease','specializationPatient']);
-
     displayData(doctorsTable, 'Doctors', ['id', 'name', 'specialization', 'email', 'phone', 'status']);
     displayData(appointmentsTable, 'Appointments', ['id', 'doctorName', 'patientName', 'specialization', 'date', 'time', 'status']);
 
