@@ -34,8 +34,11 @@ $(document).ready(function(){
         let input =$('#password');
         if(input.attr('type')=== 'password'){
             input.attr('type', 'text')
+            $('#togglePassword i').removeClass('fa fa-eye').addClass('fa fa-eye-slash')
         }else{
-            input.attr('type', 'password')
+            input.attr('type', 'password');
+            $('#togglePassword i').removeClass('fa fa-eye-slash').addClass('fa fa-eye')
+
         }
     })
 
